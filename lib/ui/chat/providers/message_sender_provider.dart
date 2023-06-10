@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
-import 'package:flutter/foundation.dart';
 import 'package:humble/core/utils/extensions.dart';
 import 'package:humble/ui/chat/models/attachment.dart';
 import 'package:humble/ui/chat/providers/attachment_uploader_provider.dart';
@@ -34,13 +33,16 @@ Future<void> messageSender(MessageSenderRef ref, dynamic key) async {
           ),
         );
         box.put(key, updated);
+        final messages =
+            ref.read(messagesNotifierProvider(message.chatId)).messages;
         ref.read(chatRepositoryProvider).sendMessage(
               updated,
               file: message.file != null ? File(message.file!) : null,
-              isNew: ref
-                  .read(messagesNotifierProvider(message.chatId))
-                  .messages
-                  .isEmpty,
+              isNew: messages.isEmpty,
+              unseen: messages
+                  .where((element) =>
+                      element.receiverId == message.receiverId && !message.seen)
+                  .length,
             );
       }
     });

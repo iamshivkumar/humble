@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/ui/chat/providers/chat_notifier.dart';
+import 'package:humble/ui/chat/providers/chat_repository_provider.dart';
+import 'package:humble/ui/chat/providers/chats_provider.dart';
 import 'package:humble/ui/chat/providers/messages_box_provider.dart';
 import 'package:humble/ui/chat/providers/messages_notifier_provider.dart';
 import 'package:humble/ui/chat/widgets/chat_input_view.dart';
@@ -22,8 +25,21 @@ class ChatPage extends HookConsumerWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final user = ref.read(userProvider).value!;
-    final model = ref.watch(chatNotifierProvider(receiverId));
     final chatId = Chat.getConversationIDByIds(receiverId, user.$id);
+
+    useEffect(() {
+     ref.read(chatsProvider.future).then((value) {
+      final chat = value.cast<Chat?>().firstWhere((element) => element?.id == chatId,orElse: () => null);
+      if(chat != null){
+        if(chat.message?.receiverId == user.$id && chat.unseen != 0){
+          ref.read(chatRepositoryProvider).makeUnseenZero(chat.id);
+        }
+      }
+     });
+      return () {};
+    }, []);
+
+    final model = ref.watch(chatNotifierProvider(receiverId));
     final messagesProvider = messagesNotifierProvider(chatId);
     final messagesState = ref.watch(messagesProvider);
     final messagesNotifier = ref.read(messagesProvider.notifier);
@@ -31,11 +47,15 @@ class ChatPage extends HookConsumerWidget {
     final hiveMessages = ref.read(messagesBoxProvider).value?.values ?? [];
     final messages = [
       ...messagesState.messages,
-      ...hiveMessages
-          .where(
-            (message) =>message.chatId == chatId && messagesState.messages.where((element) => element.hiveKey == message.key).isEmpty,
-          ),
+      ...hiveMessages.where(
+        (message) =>
+            message.chatId == chatId &&
+            messagesState.messages
+                .where((element) => element.hiveKey == message.key)
+                .isEmpty,
+      ),
     ];
+
     Map<DateTime, List<Message>> map = {};
     for (var message in messages) {
       if (map[message.createdAt.date] == null) {

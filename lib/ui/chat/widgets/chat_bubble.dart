@@ -36,10 +36,10 @@ class MessageBubble extends HookConsumerWidget {
       if (!seen.value && message.receiverId == user.$id) {
         ref.read(chatRepositoryProvider).seenMessage(message.id);
       }
-      if(message.id.isEmpty && message.key != null){
+      if (message.id.isEmpty && message.key != null) {
         ref.read(messageSenderProvider(message.key));
       }
-      if(message.id.isNotEmpty && message.hiveKey != null){
+      if (message.id.isNotEmpty && message.hiveKey != null) {
         ref.read(messagesBoxProvider).value!.delete(message.hiveKey);
       }
       return () {};
@@ -125,8 +125,12 @@ class MessageBubble extends HookConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(4),
                 child: Column(
-                  crossAxisAlignment: (message.attachment != null || message.file != null)? CrossAxisAlignment.stretch:
-                      isMy ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      (message.attachment != null || message.file != null)
+                          ? CrossAxisAlignment.stretch
+                          : isMy
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
                   children: [
                     if (message.attachment != null)
                       Consumer(
@@ -186,7 +190,7 @@ class MessageBubble extends HookConsumerWidget {
                             ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

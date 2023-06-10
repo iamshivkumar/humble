@@ -22,7 +22,7 @@ class ChatRepository {
   Databases get _db => _ref.read(databaseProvider);
 
   Future<void> sendMessage(Message message,
-      {bool isNew = false, io.File? file}) async {
+      {bool isNew = false, io.File? file, int unseen = 0}) async {
     Future<void> updateMessage() async {
       await _db.updateDocument(
         databaseId: "main",
@@ -31,6 +31,7 @@ class ChatRepository {
         data: {
           "updatedBy": message.senderId,
           "message": message.toJson(),
+          "unseen": unseen + 1,
         },
       );
     }
@@ -144,6 +145,22 @@ class ChatRepository {
           documentId: id,
           data: {
             'seen': true,
+          });
+    } on AppwriteException catch (e) {
+      return Future.error(e.type ?? e.code!);
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+  Future<void> makeUnseenZero(String id) async {
+    try {
+      await _db.updateDocument(
+          databaseId: DBs.main,
+          collectionId: Collections.chats,
+          documentId: id,
+          data: {
+            'unseen': 0,
           });
     } on AppwriteException catch (e) {
       return Future.error(e.type ?? e.code!);

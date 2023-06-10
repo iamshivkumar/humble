@@ -16,7 +16,7 @@ class Chat {
   final String? updatedBy;
   final DateTime createdAt;
   final DateTime? updatedAt;
-  final Map<String, int> unseen;
+  final int unseen;
   final Map<String, bool> typing;
 
   String? subtitleText(String uid) {
@@ -43,7 +43,7 @@ class Chat {
     required this.createdAt,
     this.updatedAt,
     this.typing = const {},
-    this.unseen = const {},
+    this.unseen = 1,
   });
 
   static String getConversationIDByIds(String id1, String id2) {
@@ -64,7 +64,7 @@ class Chat {
     String? updatedBy,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Map<String, int>? unseen,
+    int? unseen,
     Map<String, bool>? typing,
   }) {
     return Chat(
@@ -87,7 +87,7 @@ class Chat {
       'createdBy': createdBy,
       'updatedBy': updatedBy,
       'typing': jsonEncode(typing),
-      'unseen': jsonEncode(unseen),
+      'unseen': unseen,
     };
   }
 
@@ -105,14 +105,10 @@ class Chat {
           : null,
       typing: Map<String, bool>.from(
         jsonDecode(
-          'typing',
+          map['typing']?? jsonEncode({}),
         ),
       ),
-      unseen: Map<String, int>.from(
-        jsonDecode(
-          'typing',
-        ),
-      ),
+      unseen: map['unseen'] ?? 0,
     );
   }
 
