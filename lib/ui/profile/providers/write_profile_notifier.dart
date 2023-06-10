@@ -2,10 +2,11 @@
 
 import 'dart:io';
 
+import 'package:humble/core/enums/gender.dart';
 import 'package:humble/core/utils/extensions.dart';
 import 'package:humble/ui/auth/providers/user_provider.dart';
 import 'package:humble/ui/profile/models/profile.dart';
-import 'package:humble/ui/profile/providers/my_profile_provider.dart';
+import 'package:humble/ui/profile/providers/profile_provider.dart';
 import 'package:humble/ui/profile/providers/profile_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -29,15 +30,23 @@ class WriteProfileNotifier extends _$WriteProfileNotifier {
     );
   }
 
+  bool get edit => state.profile.image != null;
+
   void nameChanged(String v) {
     state = state.copyWith(profile: state.profile.copyWith(name: v));
+  }
+
+  void genderChanged(Gender v) {
+    state = state.copyWith(
+      profile: state.profile.copyWith(gender: v),
+    );
   }
 
   void occupationChanged(String v) {
     state = state.copyWith(profile: state.profile.copyWith(occupation: v));
   }
 
-    void locationChanged(String v) {
+  void locationChanged(String v) {
     state = state.copyWith(profile: state.profile.copyWith(location: v));
   }
 

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:humble/ui/auth/providers/auth_view_model.dart';
+import 'package:humble/ui/auth/widgets/primary_button.dart';
 import 'package:humble/ui/routes.dart';
 import 'package:humble/ui/utils/extensions.dart';
 import '../components/loading_layer.dart';
@@ -84,11 +85,7 @@ class LoginPage extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  MaterialButton(
-                    elevation: 0,
-                    disabledColor: context.scheme.outlineVariant.withOpacity(0.5),
-                    color: context.scheme.primaryContainer,
-                    textColor: context.scheme.onPrimaryContainer,
+                  PrimaryButton(
                     onPressed:
                         model.email.isNotEmpty && model.password.isNotEmpty
                             ? () async {
@@ -102,9 +99,8 @@ class LoginPage extends ConsumerWidget {
                                 }
                               }
                             : null,
-                    child: Text(Labels.signIn.toUpperCase()),
+                    label: Labels.signIn.toUpperCase(),
                   ),
-
                   const SizedBox(height: 24),
                   Text(
                     Labels.or,

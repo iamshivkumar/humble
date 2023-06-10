@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:humble/ui/auth/providers/auth_view_model.dart';
+import 'package:humble/ui/auth/widgets/primary_button.dart';
 import 'package:humble/ui/routes.dart';
 import 'package:humble/ui/utils/extensions.dart';
 import '../components/loading_layer.dart';
@@ -83,11 +84,7 @@ class RegisterPage extends ConsumerWidget {
                     validator: Validators.password,
                   ),
                   const SizedBox(height: 32),
-                  MaterialButton(
-                    elevation: 0,
-                    disabledColor: context.scheme.outlineVariant.withOpacity(0.5),
-                    color: context.scheme.primaryContainer,
-                    textColor: context.scheme.onPrimaryContainer,
+                  PrimaryButton(
                     onPressed: model.name.isNotEmpty &&
                             model.email.isNotEmpty &&
                             model.password.isNotEmpty
@@ -96,16 +93,14 @@ class RegisterPage extends ConsumerWidget {
                               try {
                                 await notifier.register();
                                 // ignore: use_build_context_synchronously
-                                context.push(Routes.root);
+                                context.pushReplacement(Routes.root);
                               } catch (e) {
                                 context.error(e);
                               }
                             }
                           }
                         : null,
-                    child: const Text(
-                      "Create Account",
-                    ),
+                    label: "Create Account",
                   ),
                   const SizedBox(height: 24),
                 ],

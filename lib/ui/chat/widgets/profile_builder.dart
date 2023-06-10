@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../profile/models/profile.dart';
-import '../../profile/providers/profile_provider.dart';
+import '../../profile/providers/profile_by_id_provider.dart';
 
 class ProfileBuilder extends ConsumerWidget {
   const ProfileBuilder({super.key, required this.id, required this.builder});
@@ -14,7 +14,7 @@ class ProfileBuilder extends ConsumerWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final style = theme.textTheme;
-    return ref.watch(profileInfoProvider(id)).when(
+    return ref.watch(profileByIdProvider(id)).when(
           data: (profile) => builder(profile),
           error: (e, s) => Text(
             "$e",

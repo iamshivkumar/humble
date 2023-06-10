@@ -7,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/providers/database_provider.dart';
 import 'package:humble/core/providers/storage_provider.dart';
 import 'package:humble/core/utils/buckets.dart';
-import 'package:humble/ui/chat/models/attachment.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../models/chat.dart';
@@ -36,35 +35,10 @@ class ChatRepository {
       );
     }
 
-    // if (isNew == true) {
-    //   final chat = Chat(
-    //     id: '',
-    //     message: message,
-    //     users: [message.senderId, message.receiverId],
-    //     createdBy: message.senderId,
-    //     createdAt: DateTime.now(),
-    //   );
-    //   try {
-    //     await _db.createDocument(
-    //       databaseId: "main",
-    //       collectionId: "chats",
-    //       documentId: message.chatId,
-    //       data: chat.toMap(),
-    //     );
-    //   } on AppwriteException catch (e) {
-    //     if (e.type == 'document_already_exists') {
-    //       updateMessage();
-    //     } else {
-    //       return Future.error(e.type ?? e.code.toString());
-    //     }
-    //   }
-    // } else {
-    //   updateMessage();
-    // }
-
     if (message.attachment != null) {
       final dir = await getApplicationDocumentsDirectory();
-      final f = File('${dir.path}/${message.attachment!.value}.${message.attachment!.ending}');
+      final f = File(
+          '${dir.path}/${message.attachment!.value}.${message.attachment!.ending}');
       await f.writeAsBytes(await file!.readAsBytes());
     }
 
@@ -78,6 +52,32 @@ class ChatRepository {
     } on AppwriteException catch (e) {
       print(e.code);
       print(e);
+    }
+
+    if (isNew == true) {
+      final chat = Chat(
+        id: '',
+        message: message,
+        users: [message.senderId, message.receiverId],
+        createdBy: message.senderId,
+        createdAt: DateTime.now(),
+      );
+      try {
+        await _db.createDocument(
+          databaseId: "main",
+          collectionId: "chats",
+          documentId: message.chatId,
+          data: chat.toMap(),
+        );
+      } on AppwriteException catch (e) {
+        if (e.type == 'document_already_exists') {
+          updateMessage();
+        } else {
+          return Future.error(e.type ?? e.code.toString());
+        }
+      }
+    } else {
+      updateMessage();
     }
   }
 

@@ -8,7 +8,7 @@ import 'package:humble/core/providers/cache_provider.dart';
 import 'package:humble/ui/auth/providers/user_provider.dart';
 import 'package:humble/ui/chat/providers/directory_provider.dart';
 import 'package:humble/ui/chat/providers/messages_box_provider.dart';
-import 'package:humble/ui/profile/providers/my_profile_provider.dart';
+import 'package:humble/ui/profile/providers/profile_provider.dart';
 import 'package:humble/ui/routes.dart';
 import 'package:humble/ui/utils/extensions.dart';
 import 'package:humble/ui/utils/labels.dart';

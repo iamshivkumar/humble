@@ -27,49 +27,40 @@ class AvatarEditor extends ConsumerWidget {
             child: Column(
               children: [
                 AspectRatio(
-                  aspectRatio: 3 / 4,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: context.scheme.surfaceVariant,
-                      borderRadius: BorderRadius.circular(16),
-                      image: file != null || imageData != null
-                          ? DecorationImage(
-                              fit: BoxFit.cover,
-                              image: (file != null
-                                  ? FileImage(file!)
-                                  : imageData!) as ImageProvider,
-                            )
-                          : null,
-                    ),
+                  aspectRatio: 1,
+                  child: CircleAvatar(
+                    backgroundImage: file != null || imageData != null
+                        ? (file != null ? FileImage(file!) : imageData!)
+                            as ImageProvider
+                        : null,
                   ),
                 ),
-                const SizedBox(height: 4),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () async {
-                          final picked = await context.pickAndCrop(
-                              3 / 4, ImageSource.camera);
-                          if (picked != null) {
-                            onChanged(picked);
-                          }
-                        },
-                        child: const Icon(Icons.camera_alt_outlined),
-                      ),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          shape: const CircleBorder()),
+                      onPressed: () async {
+                        final picked = await context.pickAndCrop(
+                            1, ImageSource.camera);
+                        if (picked != null) {
+                          onChanged(picked);
+                        }
+                      },
+                      child: const Icon(Icons.camera_alt_outlined),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () async {
-                          final picked = await context.pickAndCrop(
-                              3 / 4, ImageSource.gallery);
-                          if (picked != null) {
-                            onChanged(picked);
-                          }
-                        },
-                        child: const Icon(Icons.photo_outlined),
-                      ),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          shape: const CircleBorder()),
+                      onPressed: () async {
+                        final picked = await context.pickAndCrop(
+                            3 / 4, ImageSource.gallery);
+                        if (picked != null) {
+                          onChanged(picked);
+                        }
+                      },
+                      child: const Icon(Icons.photo_outlined),
                     ),
                   ],
                 ),

@@ -14,6 +14,7 @@ class AppSearchBar extends HookWidget {
     final empty = useState<bool>(value == null || value!.isEmpty);
     final searchController = useTextEditingController(text: value);
     return SearchBar(
+      constraints: const BoxConstraints(),
       elevation: const MaterialStatePropertyAll(1),
       controller: searchController,
       leading: const Padding(

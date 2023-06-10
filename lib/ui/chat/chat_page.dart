@@ -33,7 +33,7 @@ class ChatPage extends HookConsumerWidget {
       ...messagesState.messages,
       ...hiveMessages
           .where(
-            (message) => messagesState.messages.where((element) => element.hiveKey == message.key).isEmpty,
+            (message) =>message.chatId == chatId && messagesState.messages.where((element) => element.hiveKey == message.key).isEmpty,
           ),
     ];
     Map<DateTime, List<Message>> map = {};

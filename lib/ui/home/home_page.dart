@@ -12,18 +12,17 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref.watch(paginateProfilesProvider);
     final notifier = ref.read(paginateProfilesProvider.notifier);
-    return Scaffold(
+    return Scaffold(      
       // appBar: AppBar(
       //   title: const Text("Humble"),
       //   actions: [
-      //     // IconButton(onPressed: (){}, icon: Icon(Icons.search),),
       //   ],
       // ),
       body: Column(
         children: [
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: AppSearchBar(
                 value: notifier.debouncer.value,
                 onChanged: (v) {
@@ -35,7 +34,7 @@ class HomePage extends ConsumerWidget {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
             child: Row(
               children: Interests.data.entries
                   .map(

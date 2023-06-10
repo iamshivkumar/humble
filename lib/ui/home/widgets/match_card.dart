@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:humble/core/enums/gender.dart';
 import 'package:humble/core/providers/image_provider.dart';
 import 'package:humble/core/utils/buckets.dart';
 import 'package:humble/core/utils/interests.dart';
@@ -40,19 +41,19 @@ class MatchCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          profile.name,
+                          profile.labelName,
                           style: context.style.titleMedium,
                         ),
                         const SizedBox(
                           height: 4,
                         ),
-                         Text(
+                        Text(
                           profile.occupation,
                         ),
                         const SizedBox(
                           height: 4,
                         ),
-                         Text('📍 ${profile.location}'),
+                        Text('📍 ${profile.location}'),
                         const SizedBox(
                           height: 8,
                         ),

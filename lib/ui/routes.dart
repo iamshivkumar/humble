@@ -2,9 +2,9 @@ import 'package:go_router/go_router.dart';
 import 'package:humble/ui/auth/register_page.dart';
 import 'package:humble/ui/auth/reset_password_page.dart';
 import 'package:humble/ui/chat/chat_page.dart';
-import 'package:humble/ui/chat/models/chat.dart';
 import 'package:humble/ui/profile/models/profile.dart';
 import 'package:humble/ui/profile/profile_page.dart';
+import 'package:humble/ui/profile/write_profile_page.dart';
 import 'package:humble/ui/root.dart';
 import 'package:humble/ui/splash/splash_page.dart';
 
@@ -26,6 +26,10 @@ class Routes {
             builder: (context, state) => ProfilePage(
               profile: state.extra as Profile,
             ),
+          ),
+          GoRoute(
+            path: 'write_profile',
+            builder: (context, state) => const WriteProfilePage(),
           ),
           GoRoute(
             path: 'sign-up',
@@ -53,4 +57,5 @@ class Routes {
   static const resetPassword = "/reset_password";
   static const chat = "/chat";
   static const chatRoot = "/profile/chat-root";
+  static const writeProfile = "/write_profile";
 }

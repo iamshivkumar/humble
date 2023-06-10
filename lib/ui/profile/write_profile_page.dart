@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:humble/core/enums/gender.dart';
+import 'package:humble/core/utils/extensions.dart';
 import 'package:humble/core/utils/interests.dart';
+import 'package:humble/ui/auth/widgets/primary_button.dart';
 import 'package:humble/ui/profile/widgets/avatar_editor.dart';
 import 'package:humble/ui/routes.dart';
 import 'package:humble/ui/utils/dates.dart';
@@ -34,16 +37,12 @@ class WriteProfilePage extends HookConsumerWidget {
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
           appBar: AppBar(
-            title: const Text("Create your profile"),
+            title:  Text("${notifier.edit?'Edit':'Create'} your profile"),
           ),
           bottomNavigationBar: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: MaterialButton(
-                elevation: 0,
-                disabledColor: context.scheme.outlineVariant.withOpacity(0.5),
-                color: context.scheme.primaryContainer,
-                textColor: context.scheme.onPrimaryContainer,
+              child: PrimaryButton(
                 onPressed: () async {
                   if (model.profile.image == null && model.file == null) {
                     return context.error('Pick your profile image!');
@@ -54,11 +53,15 @@ class WriteProfilePage extends HookConsumerWidget {
                       return context
                           .error('Select your interests to continue!');
                     }
-                    await notifier.write();
-                    context.pushReplacement(Routes.root);
+                    try {
+                      await notifier.write();
+                      context.pushReplacement(Routes.root);
+                    } catch (e) {
+                      context.error(e);
+                    }
                   }
                 },
-                child: const Text(Labels.save),
+                label: Labels.save,
               ),
             ),
           ),
@@ -87,6 +90,27 @@ class WriteProfilePage extends HookConsumerWidget {
                         hintText: 'Your name'),
                     onChanged: notifier.nameChanged,
                     validator: Validators.required,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text("Gender"),
+                  Row(
+                    children: Gender.values
+                        .map(
+                          (e) => Row(
+                            children: [
+                              Radio(
+                                value: e,
+                                groupValue: model.profile.gender,
+                                onChanged: (v) {
+                                  notifier.genderChanged(v!);
+                                },
+                              ),
+                              Text(e.name.capitalize),
+                              const SizedBox(width: 16),
+                            ],
+                          ),
+                        )
+                        .toList(),
                   ),
                   const SizedBox(height: 16),
                   const Text("Date Of Birth"),

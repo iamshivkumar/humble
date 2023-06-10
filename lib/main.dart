@@ -7,7 +7,7 @@ import 'package:humble/ui/chat/models/message.dart';
 import 'package:humble/ui/routes.dart';
 import 'package:humble/ui/utils/labels.dart';
 
-void main() async{
+void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(MessageAdapter());
   Hive.registerAdapter(AttachmentAdapter());
@@ -27,7 +27,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: Labels.appName,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFF02D64),
+        ),
         useMaterial3: true,
         buttonTheme: const ButtonThemeData(shape: StadiumBorder()),
         inputDecorationTheme: const InputDecorationTheme(),

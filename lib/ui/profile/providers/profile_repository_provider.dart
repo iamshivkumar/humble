@@ -60,12 +60,21 @@ class ProfileRepository {
               profile.id,
             ))
           : null;
-      await _db.createDocument(
-        databaseId: DBs.main,
-        collectionId: Collections.profiles,
-        documentId: profile.id,
-        data: profile.copyWith(image: image).toMap(),
-      );
+      if (profile.image == null) {
+        await _db.createDocument(
+          databaseId: DBs.main,
+          collectionId: Collections.profiles,
+          documentId: profile.id,
+          data: profile.copyWith(image: image).toMap(),
+        );
+      } else {
+        await _db.updateDocument(
+          databaseId: DBs.main,
+          collectionId: Collections.profiles,
+          documentId: profile.id,
+          data: profile.copyWith(image: image).toMap(),
+        );
+      }
     } on AppwriteException catch (e) {
       return Future.error(e.message ?? e);
     } catch (e) {

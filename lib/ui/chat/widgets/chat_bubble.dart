@@ -120,7 +120,7 @@ class MessageBubble extends HookConsumerWidget {
                   topLeft: Radius.circular(isMy ? 16 : 0),
                 ),
                 color:
-                    isMy ? scheme.primaryContainer : scheme.secondaryContainer,
+                    isMy ? scheme.tertiaryContainer : scheme.primaryContainer,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(4),
@@ -162,15 +162,15 @@ class MessageBubble extends HookConsumerWidget {
                               message.text!,
                               style: style.bodyLarge!.copyWith(
                                   color: isMy
-                                      ? scheme.onPrimaryContainer
-                                      : scheme.onSecondaryContainer),
+                                      ? scheme.onTertiaryContainer
+                                      : scheme.onPrimaryContainer),
                             ),
                           Text(
                             message.createdAt.time,
                             style: style.labelSmall!.copyWith(
                               color: (isMy
-                                      ? scheme.onPrimaryContainer
-                                      : scheme.onSecondaryContainer)
+                                      ? scheme.onTertiaryContainer
+                                      : scheme.onPrimaryContainer)
                                   .withOpacity(0.75),
                             ),
                           ),
@@ -182,7 +182,7 @@ class MessageBubble extends HookConsumerWidget {
                                       ? Icons.done_rounded
                                       : Icons.access_time_rounded,
                               size: 16,
-                              color: context.scheme.primary,
+                              color: context.scheme.tertiary,
                             ),
                         ],
                       ),

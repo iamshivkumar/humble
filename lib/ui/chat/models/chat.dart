@@ -16,6 +16,23 @@ class Chat {
   final String? updatedBy;
   final DateTime createdAt;
   final DateTime? updatedAt;
+  final Map<String, int> unseen;
+  final Map<String, bool> typing;
+
+  String? subtitleText(String uid) {
+    if (message == null) {
+      return null;
+    }
+    final text = message!.text;
+    if (text != null) {
+      return text;
+    } else {
+      if (message!.attachment != null) {
+        return '${uid == message!.senderId ? "You sent" : "Received"} ${message!.attachment!.type.name}';
+      }
+    }
+    return null;
+  }
 
   Chat({
     required this.id,
@@ -25,6 +42,8 @@ class Chat {
     this.updatedBy,
     required this.createdAt,
     this.updatedAt,
+    this.typing = const {},
+    this.unseen = const {},
   });
 
   static String getConversationIDByIds(String id1, String id2) {
@@ -45,6 +64,8 @@ class Chat {
     String? updatedBy,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Map<String, int>? unseen,
+    Map<String, bool>? typing,
   }) {
     return Chat(
       id: id ?? this.id,
@@ -54,6 +75,8 @@ class Chat {
       updatedBy: updatedBy ?? this.updatedBy,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      typing: typing ?? this.typing,
+      unseen: unseen ?? this.unseen,
     );
   }
 
@@ -63,6 +86,8 @@ class Chat {
       'message': message?.toJson(),
       'createdBy': createdBy,
       'updatedBy': updatedBy,
+      'typing': jsonEncode(typing),
+      'unseen': jsonEncode(unseen),
     };
   }
 
@@ -78,6 +103,16 @@ class Chat {
       updatedAt: map[r'$updatedAt'] != null
           ? DateTime.tryParse(map[r'$updatedAt'])?.toLocal()
           : null,
+      typing: Map<String, bool>.from(
+        jsonDecode(
+          'typing',
+        ),
+      ),
+      unseen: Map<String, int>.from(
+        jsonDecode(
+          'typing',
+        ),
+      ),
     );
   }
 
