@@ -2,11 +2,18 @@
 
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
 import 'package:humble/core/enums/attachment_type.dart';
 
+part 'attachment.g.dart';
+
+@HiveType(typeId: 1)
 class Attachment {
+  @HiveField(0)
   final String value;
+  @HiveField(1)
   final AttachmentType type;
+  @HiveField(2)
   final String ending;
 
   Attachment({

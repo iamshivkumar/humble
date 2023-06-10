@@ -1,12 +1,15 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive/hive.dart';
 
+part 'attachment_type.g.dart';
+
+@HiveType(typeId: 2)
 enum AttachmentType {
-  @JsonValue('image')
+  @HiveField(0)
   image,
-  @JsonValue('audio')
+  @HiveField(1)
   audio,
-  @JsonValue('video')
+  @HiveField(2)
   video,
-  @JsonValue('unknown')
+  @HiveField(3)
   unknown
 }

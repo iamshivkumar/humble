@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:humble/core/enums/attachment_type.dart';
+import 'package:humble/ui/chat/models/attachment.dart';
+import 'package:humble/ui/chat/models/message.dart';
 import 'package:humble/ui/routes.dart';
 import 'package:humble/ui/utils/labels.dart';
 
-void main() {
+void main() async{
+  await Hive.initFlutter();
+  Hive.registerAdapter(MessageAdapter());
+  Hive.registerAdapter(AttachmentAdapter());
+  Hive.registerAdapter(AttachmentTypeAdapter());
   runApp(const ProviderScope(child: MyApp()));
 }
 

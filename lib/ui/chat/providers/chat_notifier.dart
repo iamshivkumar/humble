@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:humble/ui/chat/models/chat.dart';
 import 'package:humble/ui/chat/models/chat_state.dart';
-import 'package:humble/ui/chat/providers/chat_repository_provider.dart';
-import 'package:humble/ui/chat/providers/messages_notifier_provider.dart';
+import 'package:humble/ui/chat/providers/message_sender_provider.dart';
+import 'package:humble/ui/chat/providers/messages_box_provider.dart';
 import 'package:humble/ui/profile/providers/my_profile_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/message.dart';
-
 part 'chat_notifier.g.dart';
 
 @riverpod
@@ -28,7 +27,6 @@ class ChatNotifier extends _$ChatNotifier {
   }
 
   void send() async {
-    state = state.copyWith(loading: true);
     try {
       final profile = await ref.read(profileProvider.future);
       final chatId = Chat.getConversationIDByIds(profile.id, receiverId);
@@ -39,16 +37,18 @@ class ChatNotifier extends _$ChatNotifier {
         receiverId: receiverId,
         text: state.text,
         createdAt: DateTime.now(),
+        file: state.file?.path,
       );
-      final messagesModel =  ref.read(messagesNotifierProvider(chatId));
-      await ref.read(chatRepositoryProvider).sendMessage(
-            message,
-            isNew: messagesModel.messages.isEmpty,
-            file: state.file,
-          );
+      final box = ref.read(messagesBoxProvider).value!;
+      final key = await box.add(message);
+      ref.read(messageSenderProvider(key));
+      state = state.copyWith(
+        text: null,
+        file: null,
+      );
     } catch (e) {
       debugPrint('$e');
     }
-    state = state.copyWith(loading: false, text: null, file: null);
+    // state = state.copyWith(loading: false, text: null, file: null);
   }
 }

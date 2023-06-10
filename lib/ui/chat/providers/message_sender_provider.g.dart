@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'uploader_provider.dart';
+part of 'message_sender_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$uploaderHash() => r'a14c86cb2a0200781ea4cea3b90526a28d1dbb54';
+String _$messageSenderHash() => r'b7f39faad6ef22db446f3c499d9f74c4ba557163';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,38 +29,32 @@ class _SystemHash {
   }
 }
 
-typedef UploaderRef = AutoDisposeStreamProviderRef<UploadProgress>;
+typedef MessageSenderRef = AutoDisposeFutureProviderRef<void>;
 
-/// See also [uploader].
-@ProviderFor(uploader)
-const uploaderProvider = UploaderFamily();
+/// See also [messageSender].
+@ProviderFor(messageSender)
+const messageSenderProvider = MessageSenderFamily();
 
-/// See also [uploader].
-class UploaderFamily extends Family<AsyncValue<UploadProgress>> {
-  /// See also [uploader].
-  const UploaderFamily();
+/// See also [messageSender].
+class MessageSenderFamily extends Family<AsyncValue<void>> {
+  /// See also [messageSender].
+  const MessageSenderFamily();
 
-  /// See also [uploader].
-  UploaderProvider call({
-    required File file,
-    String? id,
-    required String bucketId,
-  }) {
-    return UploaderProvider(
-      file: file,
-      id: id,
-      bucketId: bucketId,
+  /// See also [messageSender].
+  MessageSenderProvider call(
+    dynamic key,
+  ) {
+    return MessageSenderProvider(
+      key,
     );
   }
 
   @override
-  UploaderProvider getProviderOverride(
-    covariant UploaderProvider provider,
+  MessageSenderProvider getProviderOverride(
+    covariant MessageSenderProvider provider,
   ) {
     return call(
-      file: provider.file,
-      id: provider.id,
-      bucketId: provider.bucketId,
+      provider.key,
     );
   }
 
@@ -76,51 +70,41 @@ class UploaderFamily extends Family<AsyncValue<UploadProgress>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'uploaderProvider';
+  String? get name => r'messageSenderProvider';
 }
 
-/// See also [uploader].
-class UploaderProvider extends AutoDisposeStreamProvider<UploadProgress> {
-  /// See also [uploader].
-  UploaderProvider({
-    required this.file,
-    this.id,
-    required this.bucketId,
-  }) : super.internal(
-          (ref) => uploader(
+/// See also [messageSender].
+class MessageSenderProvider extends AutoDisposeFutureProvider<void> {
+  /// See also [messageSender].
+  MessageSenderProvider(
+    this.key,
+  ) : super.internal(
+          (ref) => messageSender(
             ref,
-            file: file,
-            id: id,
-            bucketId: bucketId,
+            key,
           ),
-          from: uploaderProvider,
-          name: r'uploaderProvider',
+          from: messageSenderProvider,
+          name: r'messageSenderProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$uploaderHash,
-          dependencies: UploaderFamily._dependencies,
-          allTransitiveDependencies: UploaderFamily._allTransitiveDependencies,
+                  : _$messageSenderHash,
+          dependencies: MessageSenderFamily._dependencies,
+          allTransitiveDependencies:
+              MessageSenderFamily._allTransitiveDependencies,
         );
 
-  final File file;
-  final String? id;
-  final String bucketId;
+  final dynamic key;
 
   @override
   bool operator ==(Object other) {
-    return other is UploaderProvider &&
-        other.file == file &&
-        other.id == id &&
-        other.bucketId == bucketId;
+    return other is MessageSenderProvider && other.key == key;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, file.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-    hash = _SystemHash.combine(hash, bucketId.hashCode);
+    hash = _SystemHash.combine(hash, key.hashCode);
 
     return _SystemHash.finish(hash);
   }

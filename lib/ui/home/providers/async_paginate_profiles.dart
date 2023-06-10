@@ -1,3 +1,4 @@
+import 'package:humble/ui/auth/providers/user_provider.dart';
 import 'package:humble/ui/home/models/debouncer.dart';
 import 'package:humble/ui/home/models/paginate_profiles_state.dart';
 import 'package:humble/ui/profile/providers/profile_repository_provider.dart';
@@ -9,6 +10,8 @@ part 'async_paginate_profiles.g.dart';
 class PaginateProfiles extends _$PaginateProfiles {
   @override
   PaginateProfileState build() {
+    //TODO
+    final user = ref.watch(userProvider).asData?.value;
     ref.keepAlive();
     debouncer = Debouncer(const Duration(milliseconds: 500), (value) {
       state = state.copyWith(

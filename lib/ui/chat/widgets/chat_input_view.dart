@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/utils/extensions.dart';
@@ -27,7 +28,7 @@ class ChatInputView extends HookConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (model.file != null && !model.loading)
+            if (model.file != null)
               Container(
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
@@ -75,9 +76,10 @@ class ChatInputView extends HookConsumerWidget {
                           ),
                         ),
                       AttachmentType.audio => Container(
-                        margin: const EdgeInsets.symmetric(vertical: 16,horizontal: 8),
-                        child: AudioPlayerTile(file: model.file!.path),
-                      ),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 8),
+                          child: AudioPlayerTile(file: model.file!.path),
+                        ),
                       _ => Text(model.file!.path.split('/').last),
                     },
                     Positioned(
@@ -107,7 +109,6 @@ class ChatInputView extends HookConsumerWidget {
                 ),
                 Expanded(
                   child: TextField(
-                    enabled: !model.loading,
                     controller: controller,
                     textCapitalization: TextCapitalization.sentences,
                     onChanged: (v) => notifier.textChanged(v.trim().crim),
@@ -124,7 +125,7 @@ class ChatInputView extends HookConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-               if(!model.loading) SizedBox(
+                SizedBox(
                   height: 48,
                   width: 48,
                   child: RawMaterialButton(

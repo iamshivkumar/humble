@@ -74,9 +74,9 @@ class Chat {
       message: map['message'] != null ? Message.fromJson(map['message']) : null,
       createdBy: map['createdBy'] ?? '',
       updatedBy: map['updatedBy'],
-      createdAt: DateTime.parse(map[r'$createdAt']),
+      createdAt: DateTime.parse(map[r'$createdAt']).toLocal(),
       updatedAt: map[r'$updatedAt'] != null
-          ? DateTime.tryParse(map[r'$updatedAt'])
+          ? DateTime.tryParse(map[r'$updatedAt'])?.toLocal()
           : null,
     );
   }

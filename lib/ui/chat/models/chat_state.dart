@@ -10,6 +10,5 @@ class ChatState with _$ChatState {
     required String receiverId,
      String? text,
      File? file,
-     @Default(false) bool loading, 
   }) = _ChatState;
 }

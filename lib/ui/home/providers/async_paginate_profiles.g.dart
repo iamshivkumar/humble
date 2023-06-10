@@ -6,7 +6,7 @@ part of 'async_paginate_profiles.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$paginateProfilesHash() => r'00d634d25bd88aaf534da41f8ba02f7de4c217ef';
+String _$paginateProfilesHash() => r'a8730caf298c78b37947c847d82e6f94ea0db465';
 
 /// See also [PaginateProfiles].
 @ProviderFor(PaginateProfiles)

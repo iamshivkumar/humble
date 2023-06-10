@@ -19,7 +19,6 @@ mixin _$ChatState {
   String get receiverId => throw _privateConstructorUsedError;
   String? get text => throw _privateConstructorUsedError;
   File? get file => throw _privateConstructorUsedError;
-  bool get loading => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ChatStateCopyWith<ChatState> get copyWith =>
@@ -31,7 +30,7 @@ abstract class $ChatStateCopyWith<$Res> {
   factory $ChatStateCopyWith(ChatState value, $Res Function(ChatState) then) =
       _$ChatStateCopyWithImpl<$Res, ChatState>;
   @useResult
-  $Res call({String receiverId, String? text, File? file, bool loading});
+  $Res call({String receiverId, String? text, File? file});
 }
 
 /// @nodoc
@@ -50,7 +49,6 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
     Object? receiverId = null,
     Object? text = freezed,
     Object? file = freezed,
-    Object? loading = null,
   }) {
     return _then(_value.copyWith(
       receiverId: null == receiverId
@@ -65,10 +63,6 @@ class _$ChatStateCopyWithImpl<$Res, $Val extends ChatState>
           ? _value.file
           : file // ignore: cast_nullable_to_non_nullable
               as File?,
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
     ) as $Val);
   }
 }
@@ -80,7 +74,7 @@ abstract class _$$_ChatStateCopyWith<$Res> implements $ChatStateCopyWith<$Res> {
       __$$_ChatStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String receiverId, String? text, File? file, bool loading});
+  $Res call({String receiverId, String? text, File? file});
 }
 
 /// @nodoc
@@ -97,7 +91,6 @@ class __$$_ChatStateCopyWithImpl<$Res>
     Object? receiverId = null,
     Object? text = freezed,
     Object? file = freezed,
-    Object? loading = null,
   }) {
     return _then(_$_ChatState(
       receiverId: null == receiverId
@@ -112,10 +105,6 @@ class __$$_ChatStateCopyWithImpl<$Res>
           ? _value.file
           : file // ignore: cast_nullable_to_non_nullable
               as File?,
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
@@ -123,8 +112,7 @@ class __$$_ChatStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_ChatState implements _ChatState {
-  _$_ChatState(
-      {required this.receiverId, this.text, this.file, this.loading = false});
+  _$_ChatState({required this.receiverId, this.text, this.file});
 
   @override
   final String receiverId;
@@ -132,13 +120,10 @@ class _$_ChatState implements _ChatState {
   final String? text;
   @override
   final File? file;
-  @override
-  @JsonKey()
-  final bool loading;
 
   @override
   String toString() {
-    return 'ChatState(receiverId: $receiverId, text: $text, file: $file, loading: $loading)';
+    return 'ChatState(receiverId: $receiverId, text: $text, file: $file)';
   }
 
   @override
@@ -149,12 +134,11 @@ class _$_ChatState implements _ChatState {
             (identical(other.receiverId, receiverId) ||
                 other.receiverId == receiverId) &&
             (identical(other.text, text) || other.text == text) &&
-            (identical(other.file, file) || other.file == file) &&
-            (identical(other.loading, loading) || other.loading == loading));
+            (identical(other.file, file) || other.file == file));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, receiverId, text, file, loading);
+  int get hashCode => Object.hash(runtimeType, receiverId, text, file);
 
   @JsonKey(ignore: true)
   @override
@@ -167,8 +151,7 @@ abstract class _ChatState implements ChatState {
   factory _ChatState(
       {required final String receiverId,
       final String? text,
-      final File? file,
-      final bool loading}) = _$_ChatState;
+      final File? file}) = _$_ChatState;
 
   @override
   String get receiverId;
@@ -176,8 +159,6 @@ abstract class _ChatState implements ChatState {
   String? get text;
   @override
   File? get file;
-  @override
-  bool get loading;
   @override
   @JsonKey(ignore: true)
   _$$_ChatStateCopyWith<_$_ChatState> get copyWith =>

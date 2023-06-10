@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/ui/chat/providers/chat_notifier.dart';
+import 'package:humble/ui/chat/providers/messages_box_provider.dart';
 import 'package:humble/ui/chat/providers/messages_notifier_provider.dart';
 import 'package:humble/ui/chat/widgets/chat_input_view.dart';
 import 'package:humble/ui/utils/extensions.dart';
@@ -21,14 +22,22 @@ class ChatPage extends HookConsumerWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final user = ref.read(userProvider).value!;
-    final model = ref.read(chatNotifierProvider(receiverId));
+    final model = ref.watch(chatNotifierProvider(receiverId));
     final chatId = Chat.getConversationIDByIds(receiverId, user.$id);
     final messagesProvider = messagesNotifierProvider(chatId);
     final messagesState = ref.watch(messagesProvider);
     final messagesNotifier = ref.read(messagesProvider.notifier);
 
+    final hiveMessages = ref.read(messagesBoxProvider).value?.values ?? [];
+    final messages = [
+      ...messagesState.messages,
+      ...hiveMessages
+          .where(
+            (message) => messagesState.messages.where((element) => element.hiveKey == message.key).isEmpty,
+          ),
+    ];
     Map<DateTime, List<Message>> map = {};
-    for (var message in messagesState.messages) {
+    for (var message in messages) {
       if (map[message.createdAt.date] == null) {
         map[message.createdAt.date] = [];
       }
@@ -72,9 +81,10 @@ class ChatPage extends HookConsumerWidget {
                       padding: const EdgeInsets.all(8),
                       child: Column(children: [
                         /// Check this
-                        if(messagesState.moreLoading) const Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                        if (messagesState.moreLoading)
+                          const Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         ...entries.reversed.map((e) {
                           e.value.sort(
                               (a, b) => a.createdAt.compareTo(b.createdAt));
@@ -103,11 +113,10 @@ class ChatPage extends HookConsumerWidget {
                                       isMy: e.senderId == user.$id,
                                     ),
                                   )
-                                  .toList()
+                                  .toList(),
                             ],
                           );
                         }),
-                        
                       ]),
                     ),
                   ),
