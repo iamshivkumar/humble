@@ -1,9 +1,13 @@
 // ignore_for_file: unused_result
 
 import 'package:appwrite/appwrite.dart';
+import 'package:flutter/foundation.dart';
 import 'package:humble/core/providers/account_provider.dart';
+import 'package:humble/core/providers/messaging_provider.dart';
 import 'package:humble/ui/auth/models/auth_state.dart';
 import 'package:humble/ui/auth/providers/user_provider.dart';
+import 'package:humble/ui/profile/providers/profile_provider.dart';
+import 'package:humble/ui/profile/providers/profile_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_view_model.g.dart';
@@ -62,6 +66,15 @@ class AuthNotifier extends _$AuthNotifier {
         password: state.password,
       );
       await ref.refresh(userProvider.future);
+      try {
+       final profile = await ref.read(profileProvider.future);
+       final token = await ref.read(messagingProvider).getToken();
+       if(token != null){
+        ref.read(profileRepositoryProvider).updateFcmToken(uid: profile.id, token: token);
+       }
+      } catch (e) {
+        debugPrint('$e');
+      }
     } on AppwriteException catch (e) {
       state = state.copyWith(loading: false);
       return Future.error(e.message ?? "${e.code}");
@@ -91,7 +104,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> sendVerificationEmail() async {
-    await _account.createVerification(url: "https://engexpert.vercel.app");
+    await _account.createVerification(url: "https://cloud.appwrite.io/v1");
   }
 
   Future<void> sendResetLink() async {

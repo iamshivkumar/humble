@@ -32,7 +32,6 @@ class Message extends HiveObject {
   @HiveField(10)
   final String? error;
 
-
   Message({
     required this.id,
     required this.chatId,
@@ -46,6 +45,17 @@ class Message extends HiveObject {
     this.error,
     this.file,
   });
+
+  String? subtitleText(String uid) {
+    if (text != null) {
+      return text!;
+    } else {
+      if (attachment != null) {
+        return '${uid == senderId ? "You sent" : "Sent"} ${attachment!.type.name}';
+      }
+    }
+    return null;
+  }
 
   Message copyWith({
     String? id,

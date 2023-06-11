@@ -1,13 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/enums/attachment_type.dart';
+import 'package:humble/firebase_options.dart';
 import 'package:humble/ui/chat/models/attachment.dart';
 import 'package:humble/ui/chat/models/message.dart';
 import 'package:humble/ui/routes.dart';
 import 'package:humble/ui/utils/labels.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await Hive.initFlutter();
   Hive.registerAdapter(MessageAdapter());
   Hive.registerAdapter(AttachmentAdapter());
@@ -37,6 +45,13 @@ class MyApp extends StatelessWidget {
       routerConfig: Routes.router,
     );
   }
+}
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
 /// messages pagination

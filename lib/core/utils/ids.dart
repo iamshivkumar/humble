@@ -12,3 +12,7 @@ class Collections {
   static const messages = "messages";
   static const chats = "chats";
 }
+
+class FunctionIds {
+  static const notify = "648546dc3cda9556962e";
+}

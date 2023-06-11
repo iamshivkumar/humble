@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:humble/core/enums/gender.dart';
+import 'package:humble/core/providers/messaging_provider.dart';
 import 'package:humble/core/utils/extensions.dart';
 import 'package:humble/ui/auth/providers/user_provider.dart';
 import 'package:humble/ui/profile/models/profile.dart';
@@ -100,7 +101,13 @@ class WriteProfileNotifier extends _$WriteProfileNotifier {
   Future<void> write() async {
     state = state.copyWith(loading: true);
     try {
-      await _repository.writeProfile(state.profile, file: state.file);
+      final token = await ref.read(messagingProvider).getToken();
+      await _repository.writeProfile(
+        state.profile.copyWith(
+          fcmToken: token,
+        ),
+        file: state.file,
+      );
       await ref.refresh(profileProvider.future);
     } catch (e) {
       state = state.copyWith(loading: false);

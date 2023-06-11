@@ -19,20 +19,7 @@ class Chat {
   final int unseen;
   final Map<String, bool> typing;
 
-  String? subtitleText(String uid) {
-    if (message == null) {
-      return null;
-    }
-    final text = message!.text;
-    if (text != null) {
-      return text;
-    } else {
-      if (message!.attachment != null) {
-        return '${uid == message!.senderId ? "You sent" : "Received"} ${message!.attachment!.type.name}';
-      }
-    }
-    return null;
-  }
+
 
   Chat({
     required this.id,

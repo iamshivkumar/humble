@@ -15,7 +15,7 @@ class ChatTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final uid = ref.read(userProvider).value!.$id;
-    final subtitleText = e.subtitleText(uid);
+    final subtitleText = e.message?.subtitleText(uid);
     final showCount = e.message?.receiverId == uid && e.unseen != 0;
     return ProfileBuilder(
       id: e.users.where((element) => element != uid).first,

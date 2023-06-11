@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/enums/attachment_type.dart';
 import 'package:humble/core/providers/file_provider.dart';
 import 'package:humble/core/providers/thumbnail_provider.dart';
-import 'package:humble/core/utils/buckets.dart';
+import 'package:humble/core/utils/ids.dart';
 import 'package:humble/ui/auth/providers/user_provider.dart';
 import 'package:humble/ui/chat/models/attachment.dart';
 import 'package:humble/ui/chat/providers/chat_repository_provider.dart';

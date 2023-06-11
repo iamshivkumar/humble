@@ -6,7 +6,7 @@ import 'package:humble/core/utils/interests.dart';
 import 'package:humble/ui/auth/providers/user_provider.dart';
 import 'dart:io' as io;
 import '../../../core/providers/storage_provider.dart';
-import '../../../core/utils/buckets.dart';
+import '../../../core/utils/ids.dart';
 import '../models/profile.dart';
 
 final profileRepositoryProvider = Provider(ProfileRepository.new);
@@ -128,6 +128,24 @@ class ProfileRepository {
               (e) => Profile.fromDocument(e),
             )
             .toList(),
+      );
+    } on AppwriteException catch (e) {
+      return Future.error(e.type ?? e.code!);
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+  Future<void> updateFcmToken(
+      {required String uid, required String token}) async {
+    try {
+      await _db.updateDocument(
+        databaseId: DBs.main,
+        collectionId: Collections.profiles,
+        documentId: uid,
+        data: {
+          'fcmToken': token,
+        },
       );
     } on AppwriteException catch (e) {
       return Future.error(e.type ?? e.code!);

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:appwrite/appwrite.dart';
 import 'package:humble/core/providers/storage_provider.dart';
-import 'package:humble/core/utils/buckets.dart';
+import 'package:humble/core/utils/ids.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final attachmentUploaderProvider =

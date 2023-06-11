@@ -4,7 +4,7 @@ import 'package:humble/core/utils/extensions.dart';
 import 'package:humble/ui/utils/extensions.dart';
 
 import '../../../core/providers/image_provider.dart';
-import '../../../core/utils/buckets.dart';
+import '../../../core/utils/ids.dart';
 import '../models/profile.dart';
 
 class ProfileCircleAvatar extends ConsumerWidget {

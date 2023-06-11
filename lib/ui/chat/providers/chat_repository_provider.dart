@@ -5,8 +5,10 @@ import 'dart:io';
 import 'package:appwrite/appwrite.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/providers/database_provider.dart';
+import 'package:humble/core/providers/functions_provider.dart';
 import 'package:humble/core/providers/storage_provider.dart';
-import 'package:humble/core/utils/buckets.dart';
+import 'package:humble/core/utils/ids.dart';
+import 'package:humble/ui/profile/providers/profile_by_id_provider.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../models/chat.dart';
@@ -50,6 +52,19 @@ class ChatRepository {
         documentId: ID.unique(),
         data: message.copyWith(attachment: message.attachment).toMap(),
       );
+      _ref.read(functionsProvider).createExecution(
+            functionId: FunctionIds.notify,
+            data: jsonEncode({
+              "title": _ref
+                      .read(profileByIdProvider(message.receiverId))
+                      .asData
+                      ?.value
+                      .labelName ??
+                  '',
+              "body": message.subtitleText(''),
+              "receiverId": message.receiverId,
+            }),
+          );
     } on AppwriteException catch (e) {
       print(e.code);
       print(e);
@@ -169,7 +184,8 @@ class ChatRepository {
     }
   }
 
-  Future<void> updateTyping({required String chatId, required Map<String,bool> typing}) async {
+  Future<void> updateTyping(
+      {required String chatId, required Map<String, bool> typing}) async {
     try {
       await _db.updateDocument(
         databaseId: DBs.main,

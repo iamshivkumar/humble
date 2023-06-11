@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/providers/image_provider.dart';
-import 'package:humble/core/utils/buckets.dart';
+import 'package:humble/core/utils/ids.dart';
 import 'package:humble/ui/utils/extensions.dart';
 import 'package:image_picker/image_picker.dart';
 

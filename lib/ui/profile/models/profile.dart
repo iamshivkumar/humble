@@ -16,7 +16,7 @@ class Profile {
   final DateTime? dateOfBirth;
   final List<String> interests;
   final String? image;
-
+  final String? fcmToken;
 
   String get labelName => '${gender == Gender.male? '👨': '👩'}$name';
 
@@ -31,6 +31,7 @@ class Profile {
     this.interests = const [],
     this.image,
     this.gender = Gender.male,
+    this.fcmToken,
   });
 
   Profile copyWith({
@@ -44,6 +45,7 @@ class Profile {
     List<String>? interests,
     String? image,
     Gender? gender,
+    String? fcmToken,
   }) {
     return Profile(
       id: id ?? this.id,
@@ -56,6 +58,7 @@ class Profile {
       interests: interests ?? this.interests,
       image: image ?? this.image,
       gender: gender ?? this.gender,
+      fcmToken: fcmToken ?? this.fcmToken,
     );
   }
 
@@ -76,6 +79,7 @@ class Profile {
       'image': image,
       ...map,
       'gender': gender.name,
+      'fcmToken': fcmToken,
     };
   }
 
@@ -101,12 +105,13 @@ class Profile {
         (element) => element.name == map['gender'],
         orElse: () => Gender.male,
       ),
+      fcmToken: map['fcmToken'],
     );
   }
 
   @override
   String toString() {
-    return 'Profile(id: $id, name: $name, occupation: $occupation, location: $location, gender: $gender, description: $description, email: $email, dateOfBirth: $dateOfBirth, interests: $interests, image: $image)';
+    return 'Profile(id: $id, name: $name, occupation: $occupation, location: $location, gender: $gender, description: $description, email: $email, dateOfBirth: $dateOfBirth, interests: $interests, image: $image, fcmToken: $fcmToken)';
   }
 
   @override
@@ -123,7 +128,8 @@ class Profile {
       other.email == email &&
       other.dateOfBirth == dateOfBirth &&
       listEquals(other.interests, interests) &&
-      other.image == image;
+      other.image == image &&
+      other.fcmToken == fcmToken;
   }
 
   @override
@@ -137,6 +143,7 @@ class Profile {
       email.hashCode ^
       dateOfBirth.hashCode ^
       interests.hashCode ^
-      image.hashCode;
+      image.hashCode ^
+      fcmToken.hashCode;
   }
 }

@@ -139,6 +139,7 @@ class ChatInputView extends HookConsumerWidget {
                         ? () {
                             notifier.send();
                             controller.clear();
+                            notifier.debouncer.value = '';
                           }
                         : null,
                     child: Icon(

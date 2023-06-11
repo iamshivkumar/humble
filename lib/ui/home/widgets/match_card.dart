@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/enums/gender.dart';
 import 'package:humble/core/providers/image_provider.dart';
-import 'package:humble/core/utils/buckets.dart';
+import 'package:humble/core/utils/ids.dart';
 import 'package:humble/core/utils/interests.dart';
 import 'package:humble/ui/home/widgets/interest_tag.dart';
 import 'package:humble/ui/profile/models/profile.dart';

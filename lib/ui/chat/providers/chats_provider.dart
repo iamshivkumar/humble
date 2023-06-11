@@ -4,7 +4,7 @@ import 'package:humble/ui/auth/providers/user_provider.dart';
 import 'package:humble/ui/chat/providers/realtime_events_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/utils/buckets.dart';
+import '../../../core/utils/ids.dart';
 import '../models/chat.dart';
 import '../models/realtime_event.dart';
 import 'chat_repository_provider.dart';
