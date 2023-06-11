@@ -168,4 +168,21 @@ class ChatRepository {
       return Future.error(e);
     }
   }
+
+  Future<void> updateTyping({required String chatId, required Map<String,bool> typing}) async {
+    try {
+      await _db.updateDocument(
+        databaseId: DBs.main,
+        collectionId: Collections.chats,
+        documentId: chatId,
+        data: {
+          'typing': jsonEncode(typing),
+        },
+      );
+    } on AppwriteException catch (e) {
+      return Future.error(e.type ?? e.code!);
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
 }

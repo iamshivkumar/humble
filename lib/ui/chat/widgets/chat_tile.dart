@@ -16,6 +16,7 @@ class ChatTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final uid = ref.read(userProvider).value!.$id;
     final subtitleText = e.subtitleText(uid);
+    final showCount = e.message?.receiverId == uid && e.unseen != 0;
     return ProfileBuilder(
       id: e.users.where((element) => element != uid).first,
       builder: (profile) {
@@ -33,10 +34,12 @@ class ChatTile extends ConsumerWidget {
                         subtitleText,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: showCount ? FontWeight.bold : null,
+                        ),
                       ),
                     ),
-                    if (e.message?.receiverId == uid &&
-                        e.unseen != 0)
+                    if (showCount)
                       CircleAvatar(
                         backgroundColor: context.scheme.secondary,
                         radius: 8,

@@ -110,7 +110,10 @@ class ChatInputView extends HookConsumerWidget {
                   child: TextField(
                     controller: controller,
                     textCapitalization: TextCapitalization.sentences,
-                    onChanged: (v) => notifier.textChanged(v.trim().crim),
+                    onChanged: (v) {
+                      notifier.textChanged(v.trim().crim);
+                      notifier.debouncer.value = v.trim();
+                    },
                     decoration: InputDecoration(
                       filled: true,
                       border: OutlineInputBorder(

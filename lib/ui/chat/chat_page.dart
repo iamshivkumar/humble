@@ -6,14 +6,13 @@ import 'package:humble/ui/chat/providers/chat_repository_provider.dart';
 import 'package:humble/ui/chat/providers/chats_provider.dart';
 import 'package:humble/ui/chat/providers/messages_box_provider.dart';
 import 'package:humble/ui/chat/providers/messages_notifier_provider.dart';
+import 'package:humble/ui/chat/widgets/chat_appbar.dart';
 import 'package:humble/ui/chat/widgets/chat_input_view.dart';
 import 'package:humble/ui/utils/extensions.dart';
 import '../auth/providers/user_provider.dart';
-import '../profile/widgets/profile_avatar.dart';
 import 'models/chat.dart';
 import 'models/message.dart';
 import 'widgets/chat_bubble.dart';
-import 'widgets/profile_builder.dart';
 
 class ChatPage extends HookConsumerWidget {
   const ChatPage({Key? key, required this.receiverId}) : super(key: key);
@@ -22,25 +21,26 @@ class ChatPage extends HookConsumerWidget {
   static const route = "/chat";
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final user = ref.read(userProvider).value!;
-    final chatId = Chat.getConversationIDByIds(receiverId, user.$id);
-
+    final notifer = ref.read(chatNotifierProvider(receiverId).notifier);
+    
     useEffect(() {
-     ref.read(chatsProvider.future).then((value) {
-      final chat = value.cast<Chat?>().firstWhere((element) => element?.id == chatId,orElse: () => null);
-      if(chat != null){
-        if(chat.message?.receiverId == user.$id && chat.unseen != 0){
-          ref.read(chatRepositoryProvider).makeUnseenZero(chat.id);
+      ref.read(chatsProvider.future).then((value) {
+        final chat = value.cast<Chat?>().firstWhere(
+            (element) => element?.id == notifer.chatId,
+            orElse: () => null);
+        if (chat != null) {
+          if (chat.message?.receiverId == user.$id && chat.unseen != 0) {
+            ref.read(chatRepositoryProvider).makeUnseenZero(chat.id);
+          }
         }
-      }
-     });
-      return () {};
+      });
+      return () {
+        notifer.debouncer.value = '';
+      };
     }, []);
 
-    final model = ref.watch(chatNotifierProvider(receiverId));
-    final messagesProvider = messagesNotifierProvider(chatId);
+    final messagesProvider = messagesNotifierProvider(notifer.chatId);
     final messagesState = ref.watch(messagesProvider);
     final messagesNotifier = ref.read(messagesProvider.notifier);
 
@@ -49,7 +49,7 @@ class ChatPage extends HookConsumerWidget {
       ...messagesState.messages,
       ...hiveMessages.where(
         (message) =>
-            message.chatId == chatId &&
+            message.chatId == notifer.chatId &&
             messagesState.messages
                 .where((element) => element.hiveKey == message.key)
                 .isEmpty,
@@ -67,16 +67,9 @@ class ChatPage extends HookConsumerWidget {
     entries.sort((a, b) => b.key.compareTo(a.key));
 
     return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        title: ProfileBuilder(
-          id: model.receiverId,
-          builder: (profile) => ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(profile.name),
-            leading: ProfileCircleAvatar(profile: profile),
-          ),
-        ),
+      appBar: ChatAppBar(
+        receiverId: receiverId,
+        chatId: notifer.chatId,
       ),
       body: Column(
         children: [
@@ -113,7 +106,7 @@ class ChatPage extends HookConsumerWidget {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Material(
-                                  color: scheme.surfaceVariant,
+                                  color: context.scheme.surfaceVariant,
                                   shape: const StadiumBorder(),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -121,7 +114,8 @@ class ChatPage extends HookConsumerWidget {
                                     child: Text(
                                       e.key.monthDay,
                                       style: TextStyle(
-                                          color: scheme.onSurfaceVariant),
+                                          color:
+                                              context.scheme.onSurfaceVariant),
                                     ),
                                   ),
                                 ),

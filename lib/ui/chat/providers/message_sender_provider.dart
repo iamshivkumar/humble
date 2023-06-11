@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:appwrite/appwrite.dart';
 import 'package:humble/core/utils/extensions.dart';
 import 'package:humble/ui/chat/models/attachment.dart';
+import 'package:humble/ui/chat/models/message.dart';
 import 'package:humble/ui/chat/providers/attachment_uploader_provider.dart';
 import 'package:humble/ui/chat/providers/chat_repository_provider.dart';
 import 'package:humble/ui/chat/providers/messages_box_provider.dart';
@@ -18,7 +19,27 @@ Future<void> messageSender(MessageSenderRef ref, dynamic key) async {
   final completer = Completer<void>();
   final box = await ref.read(messagesBoxProvider.future);
   final message = box.get(key)!;
-  // ref.listen(uploaderProvider., (previous, next) { })
+
+  Future<void> sendMessage(Message updated) async {
+    final messages =
+        ref.read(messagesNotifierProvider(message.chatId)).messages;
+    print(messages
+        .where((element) =>
+            element.receiverId == message.receiverId && !element.seen)
+        .length);
+  await  ref.read(chatRepositoryProvider).sendMessage(
+          updated,
+          file: message.file != null ? File(message.file!) : null,
+          isNew: messages.isEmpty,
+          unseen: messages
+              .where((element) =>
+                  element.receiverId == message.receiverId && !element.seen)
+              .length,
+        );
+            completer.complete();
+
+  }
+
   if (message.file != null && message.attachment == null) {
     ref.read(attachmentUploaderProvider(message.file!));
     ref.listen(attachmentUploaderProvider(message.file!), (previous, next) {
@@ -33,29 +54,11 @@ Future<void> messageSender(MessageSenderRef ref, dynamic key) async {
           ),
         );
         box.put(key, updated);
-        final messages =
-            ref.read(messagesNotifierProvider(message.chatId)).messages;
-        ref.read(chatRepositoryProvider).sendMessage(
-              updated,
-              file: message.file != null ? File(message.file!) : null,
-              isNew: messages.isEmpty,
-              unseen: messages
-                  .where((element) =>
-                      element.receiverId == message.receiverId && !message.seen)
-                  .length,
-            );
+        sendMessage(updated);
       }
     });
   } else {
-    await ref.read(chatRepositoryProvider).sendMessage(
-          message,
-          file: message.file != null ? File(message.file!) : null,
-          isNew: ref
-              .read(messagesNotifierProvider(message.chatId))
-              .messages
-              .isEmpty,
-        );
-    completer.complete();
+    sendMessage(message);
   }
   return completer.future;
 }

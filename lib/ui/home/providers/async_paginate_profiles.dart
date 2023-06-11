@@ -1,5 +1,5 @@
 import 'package:humble/ui/auth/providers/user_provider.dart';
-import 'package:humble/ui/home/models/debouncer.dart';
+import 'package:humble/core/models/debouncer.dart';
 import 'package:humble/ui/home/models/paginate_profiles_state.dart';
 import 'package:humble/ui/profile/providers/profile_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
