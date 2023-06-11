@@ -44,7 +44,8 @@ class Dashboard extends HookConsumerWidget {
     }
 
     useOnAppLifecycleStateChange((previous, current) {
-      if (current == AppLifecycleState.resumed) {
+      if (previous == AppLifecycleState.paused &&
+          current == AppLifecycleState.resumed) {
         getInitialMessage();
       }
     });

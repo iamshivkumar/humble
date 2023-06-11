@@ -104,7 +104,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> sendVerificationEmail() async {
-    await _account.createVerification(url: "https://cloud.appwrite.io/v1");
+    await _account.createVerification(url: "https://humble-site.vercel.app/");
   }
 
   Future<void> sendResetLink() async {
@@ -112,7 +112,7 @@ class AuthNotifier extends _$AuthNotifier {
       state = state.copyWith(loading: true);
       await _account.createRecovery(
         email: state.email,
-        url: "https://engexpert.vercel.app/reset-password",
+        url: "https://humble-site.vercel.app/reset-password",
       );
     } on AppwriteException catch (e) {
       state = state.copyWith(loading: false);

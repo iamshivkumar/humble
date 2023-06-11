@@ -23,11 +23,11 @@ class EmailVerifyPage extends HookConsumerWidget {
     final email = ref.read(userProvider).value!.email;
 
     void onDone() {
-      context.push(Routes.root);
+      context.pushReplacement(Routes.root);
     }
 
     useOnAppLifecycleStateChange((previous, current) async {
-      if (previous != AppLifecycleState.paused &&
+      if (previous == AppLifecycleState.paused &&
           current == AppLifecycleState.resumed) {
         final user = await ref.refresh(userProvider.future);
         if (user.emailVerification) {

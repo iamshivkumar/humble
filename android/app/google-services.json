@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "420853674978",
+    "project_id": "humble-63fa1",
+    "storage_bucket": "humble-63fa1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420853674978:android:62246153f4ba034a76ffbb",
+        "android_client_info": {
+          "package_name": "com.shivkumar.humble"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "420853674978-ktc12iepi2qgkcvgqa6rv51ciml0j200.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ1OrXBAp9tGa3m6R8Dvx3fKZiqxaB7ls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "420853674978-ktc12iepi2qgkcvgqa6rv51ciml0j200.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "420853674978-rcc1epjpq20etgdam2jb0rnecg43pho9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.shivkumar.humble"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
