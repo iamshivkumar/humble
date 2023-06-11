@@ -8,6 +8,7 @@ import 'package:humble/ui/home/home_page.dart';
 import 'package:humble/ui/profile/account_page.dart';
 import 'package:humble/ui/profile/providers/profile_repository_provider.dart';
 import 'package:humble/ui/routes.dart';
+import 'package:humble/ui/utils/extensions.dart';
 
 import '../../core/providers/messaging_provider.dart';
 import '../auth/providers/user_provider.dart';
@@ -22,9 +23,9 @@ class Dashboard extends HookConsumerWidget {
       try {
         switch (message.data['type']) {
           case 'chat':
-            final receiverId = message.data['receiverId'];
-            if (receiverId != null) {
-              context.push(Routes.chat, extra: receiverId);
+            final senderId = message.data['senderId'];
+            if (senderId != null) {
+              context.push(Routes.chat, extra: senderId);
             }
             break;
           default:
@@ -67,16 +68,28 @@ class Dashboard extends HookConsumerWidget {
         if (event.messageId != null) {
           seen.value.add(event.messageId!);
         }
-        // final value = await showDialog(
-        //   context: context,
-        //   builder: (context) => MessageDialog(
-        //     notification: notification,
-        //   ),
-        // );
-
-        // if (value == true) {
-        //   handleRoute(event);
-        // }
+        if (GoRouter.of(context).location == Routes.root) {
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: context.scheme.onPrimaryContainer,
+              content: Text(
+                '${event.notification!.title ?? ''}: ${event.notification!.body}',
+                style: TextStyle(
+                  color: context.scheme.primaryContainer,
+                ),
+              ),
+              action: SnackBarAction(
+                textColor: context.scheme.tertiaryContainer,
+                label: "Go to chat",
+                onPressed: () {
+                  handleRoute(event);
+                },
+              ),
+            ),
+          );
+        }
       });
       return () {
         tokenSubscription.cancel();

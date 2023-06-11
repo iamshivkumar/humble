@@ -11,6 +11,8 @@ import 'package:humble/ui/chat/providers/messages_notifier_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'dart:async';
 
+import 'directory_provider.dart';
+
 part 'message_sender_provider.g.dart';
 
 @riverpod
@@ -23,11 +25,7 @@ Future<void> messageSender(MessageSenderRef ref, dynamic key) async {
   Future<void> sendMessage(Message updated) async {
     final messages =
         ref.read(messagesNotifierProvider(message.chatId)).messages;
-    print(messages
-        .where((element) =>
-            element.receiverId == message.receiverId && !element.seen)
-        .length);
-  await  ref.read(chatRepositoryProvider).sendMessage(
+    await ref.read(chatRepositoryProvider).sendMessage(
           updated,
           file: message.file != null ? File(message.file!) : null,
           isNew: messages.isEmpty,
@@ -36,13 +34,13 @@ Future<void> messageSender(MessageSenderRef ref, dynamic key) async {
                   element.receiverId == message.receiverId && !element.seen)
               .length,
         );
-            completer.complete();
-
+    completer.complete();
   }
 
   if (message.file != null && message.attachment == null) {
-    ref.read(attachmentUploaderProvider(message.file!));
-    ref.listen(attachmentUploaderProvider(message.file!), (previous, next) {
+    ref.read(attachmentUploaderProvider(message.key));
+    ref.listen(attachmentUploaderProvider(message.key!),
+        (previous, next) async {
       if (previous?.value?.progress != next.value?.progress &&
           next.value!.progress == 100) {
         final UploadProgress progress = next.value!;
@@ -51,6 +49,7 @@ Future<void> messageSender(MessageSenderRef ref, dynamic key) async {
             value: progress.$id,
             type: Attachment.getTypeFromPath(message.file!),
             ending: message.file!.ending,
+            name: message.file?.split('/').last,
           ),
         );
         box.put(key, updated);

@@ -57,7 +57,6 @@ class ProfileRepository {
           ? (await uploadImage(
               file,
               Buckets.profiles,
-              profile.id,
             ))
           : null;
       if (profile.image == null) {
@@ -90,7 +89,7 @@ class ProfileRepository {
   ]) async {
     return (await _storage.createFile(
       bucketId: bucketId,
-      fileId: id ?? ID.unique(),
+      fileId: ID.unique(),
       file: InputFile.fromPath(
         filename: id,
         path: file.path,

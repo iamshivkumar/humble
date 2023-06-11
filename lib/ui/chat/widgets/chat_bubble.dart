@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/enums/attachment_type.dart';
 import 'package:humble/core/providers/file_provider.dart';
@@ -14,8 +15,10 @@ import 'package:humble/ui/chat/providers/message_sender_provider.dart';
 import 'package:humble/ui/chat/providers/messages_box_provider.dart';
 import 'package:humble/ui/chat/video_player_page.dart';
 import 'package:humble/ui/chat/widgets/audio_player_title.dart';
+import 'package:humble/ui/chat/widgets/upload_progress_indicator.dart';
 import 'package:humble/ui/components/async_widget.dart';
 import 'package:humble/ui/utils/extensions.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/message.dart';
 
@@ -44,55 +47,100 @@ class MessageBubble extends HookConsumerWidget {
       }
       return () {};
     }, []);
-    Widget fileView(File file) {
+    Widget fileView(File file, [String? name]) {
       final type = Attachment.getTypeFromPath(file.path);
-      return ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: 0,
-          maxHeight: type == AttachmentType.audio
-              ? double.infinity
-              : (context.media.size.width * 3 / 4),
-          minWidth: context.media.size.width / 2,
-          maxWidth: context.media.size.width * 2 / 3,
-        ),
-        child: switch (type) {
-          AttachmentType.video => GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
+      return Stack(
+        fit: StackFit.passthrough,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: 0,
+              maxHeight: type == AttachmentType.audio
+                  ? double.infinity
+                  : (context.media.size.width * 3 / 4),
+              minWidth: context.media.size.width / 2,
+              maxWidth: context.media.size.width * 2 / 3,
+            ),
+            child: switch (type) {
+              AttachmentType.video => GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
                         builder: (context) => VideoPlayerPage(path: file.path),
-                        fullscreenDialog: true));
-              },
-              child: AsyncWidget(
-                value: ref.watch(thumbnailProvider(file.path)),
-                data: (data) => data != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.file(
-                          File(data),
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : const SizedBox(),
-              ),
-            ),
-          AttachmentType.audio => Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: context.scheme.surface,
-              ),
-              child: AudioPlayerTile(file: file.path),
-            ),
-          AttachmentType.image => ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.file(
-                file,
-                fit: BoxFit.cover,
-              ),
-            ),
-          _ => const SizedBox()
-        },
+                        fullscreenDialog: true,
+                      ),
+                    );
+                  },
+                  child: AsyncWidget(
+                    value: ref.watch(thumbnailProvider(file.path)),
+                    data: (data) => data != null
+                        ? Stack(
+                            fit: StackFit.passthrough,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  File(data),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Center(
+                                child: Icon(
+                                  Icons.play_arrow_rounded,
+                                  size: 40,
+                                  color: isMy
+                                      ? context.scheme.tertiary
+                                      : context.scheme.primary,
+                                ),
+                              )
+                            ],
+                          )
+                        : const SizedBox(),
+                  ),
+                ),
+              AttachmentType.audio => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: (isMy
+                            ? context.scheme.tertiary
+                            : context.scheme.primary)
+                        .withOpacity(0.25),
+                  ),
+                  child: AudioPlayerTile(
+                    file: file.path,
+                    isMy: isMy,
+                  ),
+                ),
+              AttachmentType.image => GestureDetector(
+                  onTap: () {
+                    context.openImage(file.path);
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.file(
+                      file,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              _ => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: (isMy
+                            ? context.scheme.tertiary
+                            : context.scheme.primary)
+                        .withOpacity(0.25),
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    name ?? file.path.split('/').last,
+                  ),
+                ),
+            },
+          ),
+          if (message.id.isEmpty) UploadProgressIndicator(hiveKey: message.key),
+        ],
       );
     }
 
@@ -140,7 +188,8 @@ class MessageBubble extends HookConsumerWidget {
                               message.attachment!.value,
                               message.attachment!.ending));
                           return fileAsync.when(
-                            data: (file) => fileView(file),
+                            data: (file) =>
+                                fileView(file, message.attachment?.name),
                             error: (error, stackTrace) => Center(
                               child: Text('$error'),
                             ),
@@ -150,8 +199,7 @@ class MessageBubble extends HookConsumerWidget {
                       ),
                     if (message.attachment == null && message.file != null)
                       fileView(
-                        File(message.file!),
-                      ),
+                          File(message.file!), message.file!.split('/').last),
                     if (message.attachment != null || message.file != null)
                       const SizedBox(height: 4),
                     Padding(
@@ -162,12 +210,21 @@ class MessageBubble extends HookConsumerWidget {
                         crossAxisAlignment: WrapCrossAlignment.end,
                         children: [
                           if (message.text != null)
-                            Text(
-                              message.text!,
+                            Linkify(
+                              options: const LinkifyOptions(
+                                humanize: false,
+                              ),
+                              onOpen: (link) async {
+                                await launchUrl(Uri.parse(link.url),
+                                    mode: LaunchMode.externalApplication);
+                              },
+                              text: message.text!,
                               style: style.bodyLarge!.copyWith(
                                   color: isMy
                                       ? scheme.onTertiaryContainer
                                       : scheme.onPrimaryContainer),
+                              linkStyle:
+                                  TextStyle(color: context.scheme.tertiary),
                             ),
                           Text(
                             message.createdAt.time,

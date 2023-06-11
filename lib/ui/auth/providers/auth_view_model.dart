@@ -73,7 +73,7 @@ class AuthNotifier extends _$AuthNotifier {
         ref.read(profileRepositoryProvider).updateFcmToken(uid: profile.id, token: token);
        }
       } catch (e) {
-        debugPrint('$e');
+        debugPrint('token error $e');
       }
     } on AppwriteException catch (e) {
       state = state.copyWith(loading: false);

@@ -1,10 +1,8 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'dart:convert';
-
 import 'package:hive/hive.dart';
 import 'package:humble/core/enums/attachment_type.dart';
-
 part 'attachment.g.dart';
 
 @HiveType(typeId: 1)
@@ -15,22 +13,26 @@ class Attachment {
   final AttachmentType type;
   @HiveField(2)
   final String ending;
-
+  @HiveField(3)
+  final String? name;
   Attachment({
     required this.value,
     required this.type,
     required this.ending,
+    this.name,
   });
 
   Attachment copyWith({
     String? value,
     AttachmentType? type,
     String? ending,
+    String? name,
   }) {
     return Attachment(
       value: value ?? this.value,
       type: type ?? this.type,
       ending: ending ?? this.ending,
+      name: name ?? this.name,
     );
   }
 
@@ -39,6 +41,7 @@ class Attachment {
       'value': value,
       'type': type.name,
       'ending': ending,
+      'name': name,
     };
   }
 
@@ -49,6 +52,7 @@ class Attachment {
         (element) => element.name == map['type'],
       ),
       ending: map['ending'] ?? '',
+      name: map['name'],
     );
   }
 
@@ -58,8 +62,9 @@ class Attachment {
       Attachment.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'Attachment(value: $value, type: $type, ending: $ending)';
+  String toString() {
+    return 'Attachment(value: $value, type: $type, ending: $ending, name: $name)';
+  }
 
   @override
   bool operator ==(Object other) {
@@ -68,11 +73,14 @@ class Attachment {
     return other is Attachment &&
         other.value == value &&
         other.type == type &&
-        other.ending == ending;
+        other.ending == ending &&
+        other.name == name;
   }
 
   @override
-  int get hashCode => value.hashCode ^ type.hashCode ^ ending.hashCode;
+  int get hashCode {
+    return value.hashCode ^ type.hashCode ^ ending.hashCode ^ name.hashCode;
+  }
 
   static AttachmentType getTypeFromPath(String path) {
     final ending = path.split('.').last;

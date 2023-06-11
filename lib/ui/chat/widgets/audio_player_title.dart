@@ -5,9 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:humble/ui/utils/extensions.dart';
 
 class AudioPlayerTile extends StatefulWidget {
-  const AudioPlayerTile({super.key, required this.file});
+  const AudioPlayerTile({
+    super.key,
+    required this.file,
+    required this.isMy,
+  });
   final String file;
 
+  final bool isMy;
   @override
   State<AudioPlayerTile> createState() => _AudioPlayerTileState();
 }
@@ -60,6 +65,7 @@ class _AudioPlayerTileState extends State<AudioPlayerTile> {
 
   @override
   void dispose() {
+    player.stop();
     _durationSubscription?.cancel();
     _positionSubscription?.cancel();
     _playerCompleteSubscription?.cancel();
@@ -69,15 +75,20 @@ class _AudioPlayerTileState extends State<AudioPlayerTile> {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).primaryColor;
+    final color =
+        widget.isMy ? context.scheme.tertiary : context.scheme.primary;
     return Stack(
       alignment: Alignment.centerLeft,
       children: [
         Row(
           children: [
-            const SizedBox(width: 32,),
+            const SizedBox(
+              width: 32,
+            ),
             Expanded(
               child: Slider(
+                thumbColor: color,
+                activeColor: color,
                 onChanged: (v) {
                   final duration = _duration;
                   if (duration == null) {
@@ -115,12 +126,15 @@ class _AudioPlayerTileState extends State<AudioPlayerTile> {
           right: 12,
           bottom: 0,
           child: Text(
-              _position != null
-                  ? '$_positionText / $_durationText'
-                  : _duration != null
-                      ? _durationText
-                      : '',
-              style: context.style.bodySmall),
+            _position != null
+                ? '$_positionText / $_durationText'
+                : _duration != null
+                    ? _durationText
+                    : '',
+            style: context.style.bodySmall!.copyWith(
+              color: context.scheme.outline,
+            ),
+          ),
         ),
       ],
     );

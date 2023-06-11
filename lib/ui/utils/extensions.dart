@@ -12,8 +12,7 @@ extension OnDateTime on DateTime {
   String get formatTime => DateFormat('hh:mm a').format(this);
   String get formatDate => DateFormat('dd MMM yyyy').format(this);
 
-
-  DateTime get date => DateTime(year,month,day);
+  DateTime get date => DateTime(year, month, day);
 
   String get formatDateTime => DateFormat('dd MMM yyyy hh:mm a').format(this);
 
@@ -38,15 +37,14 @@ extension OnDateTime on DateTime {
 
     return "${date()} at $formatTime";
   }
+
   String get time => DateFormat("hh:mm a").format(this);
 
-    String get monthDay => DateFormat(DateFormat.MONTH_DAY).format(this);
+  String get monthDay => DateFormat(DateFormat.MONTH_DAY).format(this);
 
   String get monthDaySimple => DateFormat("d MMM").format(this);
 
-
   String get monthLabel => DateFormat("MMM").format(this);
-  
 }
 
 extension OnBuildContext on BuildContext {
@@ -100,18 +98,28 @@ extension OnBuildContext on BuildContext {
         borderRadius: BorderRadius.circular(12),
       );
 
-  // void openImage(String url) {
-  //   Navigator.of(this).push(
-  //     MaterialPageRoute(
-  //       fullscreenDialog: true,
-  //       builder: (context) => ImagePage(url: url)
-  //     ),
-  //   );
-  // }
+  void openImage(String path) {
+    Navigator.of(this).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => Scaffold(
+          appBar: AppBar(),
+          body: Center(
+            child: SafeArea(
+              child: Image.file(
+                File(path),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-   Future<File?> pickAndCrop([double? aspectRatio,ImageSource? source]) async {
+  Future<File?> pickAndCrop([double? aspectRatio, ImageSource? source]) async {
     try {
-      final file = await ImagePicker().pickImage(source: source?? ImageSource.gallery);
+      final file =
+          await ImagePicker().pickImage(source: source ?? ImageSource.gallery);
       if (file != null) {
         CroppedFile? croppedFile = await ImageCropper().cropImage(
           maxHeight: 512,

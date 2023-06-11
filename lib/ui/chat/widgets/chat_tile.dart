@@ -25,7 +25,20 @@ class ChatTile extends ConsumerWidget {
             context.push(Routes.chat,
                 extra: e.users.firstWhere((element) => element != uid));
           },
-          title: Text(profile.name),
+          title: Row(
+            children: [
+              Flexible(
+                child: Text(profile.name),
+              ),
+              if (e.typing[profile.id] ?? false)
+                Text(
+                  '  Typing...',
+                  style: context.style.labelSmall!.copyWith(
+                    color: context.scheme.primary,
+                  ),
+                ),
+            ],
+          ),
           subtitle: subtitleText != null
               ? Row(
                   children: [

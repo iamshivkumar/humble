@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/utils/extensions.dart';
 import 'package:humble/ui/chat/widgets/audio_player_title.dart';
+import 'package:humble/ui/chat/widgets/video_player_widget.dart';
 import 'package:humble/ui/utils/extensions.dart';
 import 'package:video_player/video_player.dart';
 
@@ -26,6 +27,7 @@ class ChatInputView extends HookConsumerWidget {
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (model.file != null)
               Container(
@@ -44,46 +46,29 @@ class ChatInputView extends HookConsumerWidget {
                             child: Image.file(model.file!),
                           ),
                         ),
-                      AttachmentType.video => AbsorbPointer(
-                          absorbing: true,
-                          child: HookConsumer(
-                            builder: (context, ref, child) {
-                              final initialized = useState<bool>(false);
-                              final controller =
-                                  useRef(VideoPlayerController.file(model.file!)
-                                    ..initialize().then((value) {
-                                      initialized.value = true;
-                                    }));
-
-                              return initialized.value
-                                  ? Center(
-                                      child: SizedBox(
-                                        width: context.media.size.width / 2,
-                                        height: (context.media.size.width / 2) /
-                                            controller.value.value.aspectRatio,
-                                        child: VideoPlayer(
-                                          controller.value,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      height: 100,
-                                      width: 100,
-                                      color: context.scheme.outlineVariant,
-                                    );
-                            },
+                      AttachmentType.video => AspectRatio(
+                          aspectRatio: 2,
+                          child: VideoPlayerWidget(
+                            path: model.file!.path,
                           ),
                         ),
                       AttachmentType.audio => Container(
                           margin: const EdgeInsets.symmetric(
                               vertical: 16, horizontal: 8),
-                          child: AudioPlayerTile(file: model.file!.path),
+                          child: AudioPlayerTile(
+                            file: model.file!.path,
+                            isMy: true,
+                          ),
                         ),
-                      _ => Text(model.file!.path.split('/').last),
+                      _ => Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(model.file!.path.split('/').last),
+                        ),
                     },
                     Positioned(
                       right: 0,
                       child: IconButton(
+                        color: context.scheme.error,
                         onPressed: () {
                           notifier.fileChanged(null);
                         },
@@ -109,6 +94,8 @@ class ChatInputView extends HookConsumerWidget {
                 Expanded(
                   child: TextField(
                     controller: controller,
+                    minLines: 1,
+                    maxLines: 3,
                     textCapitalization: TextCapitalization.sentences,
                     onChanged: (v) {
                       notifier.textChanged(v.trim().crim);
@@ -120,8 +107,8 @@ class ChatInputView extends HookConsumerWidget {
                         borderRadius: BorderRadius.circular(100),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       hintText: "Type your message..",
                     ),
                   ),

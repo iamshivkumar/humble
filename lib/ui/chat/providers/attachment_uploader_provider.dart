@@ -2,11 +2,14 @@ import 'dart:async';
 import 'package:appwrite/appwrite.dart';
 import 'package:humble/core/providers/storage_provider.dart';
 import 'package:humble/core/utils/ids.dart';
+import 'package:humble/ui/chat/providers/messages_box_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final attachmentUploaderProvider =
-    StreamProvider.family<UploadProgress, String>((ref, path) {
+    StreamProvider.family<UploadProgress, int>((ref, key) {
   final controller = StreamController<UploadProgress>();
+  final message = ref.read(messagesBoxProvider).value!.get(key)!;
+  final path = message.file!;
   ref
       .read(storageProvider)
       .createFile(

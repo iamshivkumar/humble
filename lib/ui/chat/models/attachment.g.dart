@@ -20,19 +20,22 @@ class AttachmentAdapter extends TypeAdapter<Attachment> {
       value: fields[0] as String,
       type: fields[1] as AttachmentType,
       ending: fields[2] as String,
+      name: fields[3] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Attachment obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.value)
       ..writeByte(1)
       ..write(obj.type)
       ..writeByte(2)
-      ..write(obj.ending);
+      ..write(obj.ending)
+      ..writeByte(3)
+      ..write(obj.name);
   }
 
   @override

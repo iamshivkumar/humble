@@ -5,9 +5,12 @@ import 'dart:io';
 import 'package:appwrite/appwrite.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/providers/database_provider.dart';
+import 'package:humble/core/providers/file_provider.dart';
 import 'package:humble/core/providers/functions_provider.dart';
 import 'package:humble/core/providers/storage_provider.dart';
 import 'package:humble/core/utils/ids.dart';
+import 'package:humble/ui/chat/providers/attachment_uploader_provider.dart';
+import 'package:humble/ui/chat/providers/directory_provider.dart';
 import 'package:humble/ui/profile/providers/profile_by_id_provider.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -39,10 +42,11 @@ class ChatRepository {
     }
 
     if (message.attachment != null) {
-      final dir = await getApplicationDocumentsDirectory();
+      final dir = await _ref.read(directoryProvider.future);
       final f = File(
           '${dir.path}/${message.attachment!.value}.${message.attachment!.ending}');
       await f.writeAsBytes(await file!.readAsBytes());
+      await _ref.read(fileProvider(Buckets.attachments,message.attachment!.value,message.attachment!.ending).future);
     }
 
     try {
@@ -63,6 +67,7 @@ class ChatRepository {
                   '',
               "body": message.subtitleText(''),
               "receiverId": message.receiverId,
+              "senderId": message.senderId,
             }),
           );
     } on AppwriteException catch (e) {
