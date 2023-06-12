@@ -14,6 +14,7 @@ final realtimeEventsProvider = StreamProvider<RealtimeChange>((ref) {
   const channels = [
     'databases.${DBs.main}.collections.${Collections.messages}.documents',
     'databases.${DBs.main}.collections.${Collections.chats}.documents',
+    'databases.${DBs.main}.collections.${Collections.profiles}.documents',
   ];
   final subscription =  realtime.subscribe(channels).stream.listen((message) {
     for (var channel in channels) {
@@ -38,6 +39,7 @@ final realtimeEventsProvider = StreamProvider<RealtimeChange>((ref) {
       }
     }
   });
+  
   ref.onDispose(() {
     subscription.cancel();
   });

@@ -173,6 +173,8 @@ class ChatRepository {
     }
   }
 
+
+
   Future<void> makeUnseenZero(String id) async {
     try {
       await _db.updateDocument(

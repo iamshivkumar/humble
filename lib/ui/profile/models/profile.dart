@@ -17,6 +17,7 @@ class Profile {
   final List<String> interests;
   final String? image;
   final String? fcmToken;
+  final bool online;
 
   String get labelName => '${gender == Gender.male? '👨': '👩'}$name';
 
@@ -32,6 +33,7 @@ class Profile {
     this.image,
     this.gender = Gender.male,
     this.fcmToken,
+    this.online = false,
   });
 
   Profile copyWith({
@@ -46,6 +48,7 @@ class Profile {
     String? image,
     Gender? gender,
     String? fcmToken,
+    bool? online,
   }) {
     return Profile(
       id: id ?? this.id,
@@ -59,6 +62,7 @@ class Profile {
       image: image ?? this.image,
       gender: gender ?? this.gender,
       fcmToken: fcmToken ?? this.fcmToken,
+      online: online ?? this.online,
     );
   }
 
@@ -80,6 +84,7 @@ class Profile {
       ...map,
       'gender': gender.name,
       'fcmToken': fcmToken,
+      'online': online,
     };
   }
 
@@ -106,12 +111,13 @@ class Profile {
         orElse: () => Gender.male,
       ),
       fcmToken: map['fcmToken'],
+      online: map['online'] ?? false,
     );
   }
 
   @override
   String toString() {
-    return 'Profile(id: $id, name: $name, occupation: $occupation, location: $location, gender: $gender, description: $description, email: $email, dateOfBirth: $dateOfBirth, interests: $interests, image: $image, fcmToken: $fcmToken)';
+    return 'Profile(id: $id, name: $name, occupation: $occupation, location: $location, gender: $gender, description: $description, email: $email, dateOfBirth: $dateOfBirth, interests: $interests, image: $image, fcmToken: $fcmToken, online: $online)';
   }
 
   @override

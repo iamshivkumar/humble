@@ -20,19 +20,30 @@ class ProfileCircleAvatar extends ConsumerWidget {
             .asData
             ?.value
         : null;
-    return CircleAvatar(
-      radius: radius,
-      backgroundColor: scheme.tertiaryContainer,
-      backgroundImage: image,
-      child: image == null
-          ? Text(
-              profile.name.initial,
-              style: TextStyle(
-                color: scheme.onTertiaryContainer,
-                fontSize: radius,
-              ),
-            )
-          : null,
+    return Stack(
+      children: [
+        CircleAvatar(
+          radius: radius,
+          backgroundColor: scheme.tertiaryContainer,
+          backgroundImage: image,
+          child: image == null
+              ? Text(
+                  profile.name.initial,
+                  style: TextStyle(
+                    color: scheme.onTertiaryContainer,
+                    fontSize: radius,
+                  ),
+                )
+              : null,
+        ),
+       if(profile.online) Positioned(
+          right: 0,
+          child: const CircleAvatar(
+            radius: 5,
+            backgroundColor: Colors.greenAccent,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -83,7 +94,7 @@ class ProfileAvatar extends ConsumerWidget {
     return AspectRatio(
       aspectRatio: 1,
       child: CircleAvatar(
-        backgroundImage: imageAsync.asData != null? imageAsync.value : null,
+        backgroundImage: imageAsync.asData != null ? imageAsync.value : null,
       ),
     );
     return AspectRatio(

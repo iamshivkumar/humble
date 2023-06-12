@@ -18,6 +18,9 @@ class Dashboard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final profileRepo = ref.read(profileRepositoryProvider);
+    final user = ref.read(userProvider).value!;
+
     final seen = useRef(<String>{});
     void handleRoute(RemoteMessage message) {
       try {
@@ -49,20 +52,27 @@ class Dashboard extends HookConsumerWidget {
           current == AppLifecycleState.resumed) {
         getInitialMessage();
       }
+      if ([
+        AppLifecycleState.detached,
+        AppLifecycleState.inactive,
+        AppLifecycleState.paused
+      ].contains(current)) {
+        profileRepo.updateOnlineStatus(uid: user.$id, value: false);
+      } else if (current == AppLifecycleState.resumed) {
+        profileRepo.updateOnlineStatus(uid: user.$id, value: true);
+      }
     });
 
     useEffect(() {
       final messaging = ref.read(messagingProvider);
       final tokenSubscription = messaging.onTokenRefresh.listen(
         (event) {
-          final user = ref.read(userProvider).value!;
-          ref
-              .read(profileRepositoryProvider)
-              .updateFcmToken(uid: user.$id, token: event);
+          profileRepo.updateFcmToken(uid: user.$id, token: event);
         },
       );
-      getInitialMessage();
 
+      getInitialMessage();
+      profileRepo.updateOnlineStatus(uid: user.$id, value: true);
       final messageSubscription =
           FirebaseMessaging.onMessage.listen((event) async {
         if (event.messageId != null) {

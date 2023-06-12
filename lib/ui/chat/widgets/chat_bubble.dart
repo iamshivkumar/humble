@@ -18,6 +18,7 @@ import 'package:humble/ui/chat/widgets/audio_player_title.dart';
 import 'package:humble/ui/chat/widgets/upload_progress_indicator.dart';
 import 'package:humble/ui/components/async_widget.dart';
 import 'package:humble/ui/utils/extensions.dart';
+import 'package:open_file/open_file.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/message.dart';
@@ -124,19 +125,24 @@ class MessageBubble extends HookConsumerWidget {
                     ),
                   ),
                 ),
-              _ => Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: (isMy
-                            ? context.scheme.tertiary
-                            : context.scheme.primary)
-                        .withOpacity(0.25),
+              _ => GestureDetector(
+                  onTap: () {
+                    OpenFile.open(file.path);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: (isMy
+                              ? context.scheme.tertiary
+                              : context.scheme.primary)
+                          .withOpacity(0.25),
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      name ?? file.path.split('/').last,
+                    ),
                   ),
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    name ?? file.path.split('/').last,
-                  ),
-                ),
+                )
             },
           ),
           if (message.id.isEmpty) UploadProgressIndicator(hiveKey: message.key),

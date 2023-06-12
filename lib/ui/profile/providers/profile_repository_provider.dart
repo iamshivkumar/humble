@@ -152,4 +152,23 @@ class ProfileRepository {
       return Future.error(e);
     }
   }
+
+  Future<void> updateOnlineStatus(
+      {required String uid, required bool value}) async {
+    try {
+      await _db.updateDocument(
+        databaseId: DBs.main,
+        collectionId: Collections.profiles,
+        documentId: uid,
+        data: {
+          'online': value,
+        },
+      );
+    } on AppwriteException catch (e) {
+      return Future.error(e.type ?? e.code!);
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
 }
