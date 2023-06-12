@@ -69,8 +69,8 @@ class MatchCard extends StatelessWidget {
                 children: [
                   ...profile.interests
                       .map((e) => InterestMiniTag(Interests.label(e))),
-                  if (profile.interests.length > 4)
-                    InterestMiniTag("+${profile.interests.length - 4}")
+                  if (profile.interests.length > 5)
+                    InterestMiniTag("+${profile.interests.length - 5}")
                 ],
               ),
             ],

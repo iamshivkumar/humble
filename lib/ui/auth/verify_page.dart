@@ -7,8 +7,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/ui/auth/providers/auth_view_model.dart';
+import 'package:humble/ui/auth/widgets/primary_button.dart';
 import 'package:humble/ui/routes.dart';
 import 'package:humble/ui/utils/extensions.dart';
+import '../utils/assets.dart';
 import '../utils/labels.dart';
 import 'providers/user_provider.dart';
 
@@ -61,24 +63,26 @@ class EmailVerifyPage extends HookConsumerWidget {
               style: styles.bodyLarge,
             ),
             const Spacer(),
-            // Expanded(
-            //   flex: 4,
-            //   child: SvgPicture.asset(
-            //     Assets.emailVerify,
-            //   ),
-            // ),
+            Expanded(
+              flex: 4,
+              child: Image.asset(
+                Assets.email,
+              ),
+            ),
             const Spacer(),
-            MaterialButton(
-              onPressed: () async {
-                final v = await ref.refresh(userProvider.future);
-                if (!v.emailVerification) {
-                  onDone();
-                } else {}
-              },
-              child: const Text('Done'),
+            Center(
+              child: PrimaryButton(
+                onPressed: () async {
+                  final v = await ref.refresh(userProvider.future);
+                  if (!v.emailVerification) {
+                    onDone();
+                  } else {}
+                },
+                label: 'Done',
+              ),
             ),
             const SizedBox(height: 16),
-            OutlinedButton(
+            TextButton(
               onPressed: () async {
                 try {
                   await notifier.sendVerificationEmail();

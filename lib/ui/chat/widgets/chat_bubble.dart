@@ -56,9 +56,10 @@ class MessageBubble extends HookConsumerWidget {
           ConstrainedBox(
             constraints: BoxConstraints(
               minHeight: 0,
-              maxHeight: type == AttachmentType.audio
-                  ? double.infinity
-                  : (context.media.size.width * 3 / 4),
+              maxHeight:
+                  [AttachmentType.audio, AttachmentType.video].contains(type)
+                      ? double.infinity
+                      : (context.media.size.width * 3 / 4),
               minWidth: context.media.size.width / 2,
               maxWidth: context.media.size.width * 2 / 3,
             ),
@@ -78,6 +79,7 @@ class MessageBubble extends HookConsumerWidget {
                     data: (data) => data != null
                         ? Stack(
                             fit: StackFit.passthrough,
+                            alignment: Alignment.center,
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
@@ -86,15 +88,13 @@ class MessageBubble extends HookConsumerWidget {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              Center(
-                                child: Icon(
-                                  Icons.play_arrow_rounded,
-                                  size: 40,
-                                  color: isMy
-                                      ? context.scheme.tertiary
-                                      : context.scheme.primary,
-                                ),
-                              )
+                              Icon(
+                                Icons.play_arrow_rounded,
+                                size: 40,
+                                color: isMy
+                                    ? context.scheme.tertiary
+                                    : context.scheme.primary,
+                              ),
                             ],
                           )
                         : const SizedBox(),
@@ -127,8 +127,8 @@ class MessageBubble extends HookConsumerWidget {
                 ),
               _ => GestureDetector(
                   onTap: () async {
-                  final value = await  OpenFilex.open(file.path);
-                  print(value.message);
+                    final value = await OpenFilex.open(file.path);
+                    print(value.message);
                   },
                   child: Container(
                     decoration: BoxDecoration(

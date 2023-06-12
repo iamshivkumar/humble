@@ -125,6 +125,7 @@ extension OnBuildContext on BuildContext {
           maxHeight: 512,
           maxWidth: 512,
           sourcePath: file.path,
+          cropStyle: CropStyle.circle,
           aspectRatio: CropAspectRatio(ratioX: (aspectRatio ?? 1), ratioY: 1),
           uiSettings: [],
         );

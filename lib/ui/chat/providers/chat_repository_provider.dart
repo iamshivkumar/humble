@@ -9,7 +9,6 @@ import 'package:humble/core/providers/file_provider.dart';
 import 'package:humble/core/providers/functions_provider.dart';
 import 'package:humble/core/providers/storage_provider.dart';
 import 'package:humble/core/utils/ids.dart';
-import 'package:humble/ui/chat/providers/attachment_uploader_provider.dart';
 import 'package:humble/ui/chat/providers/directory_provider.dart';
 import 'package:humble/ui/profile/providers/profile_by_id_provider.dart';
 import 'package:path_provider/path_provider.dart';

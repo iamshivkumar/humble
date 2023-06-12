@@ -10,8 +10,7 @@ part 'async_paginate_profiles.g.dart';
 class PaginateProfiles extends _$PaginateProfiles {
   @override
   PaginateProfileState build() {
-    //TODO
-    final user = ref.watch(userProvider).asData?.value;
+    ref.watch(userProvider).asData?.value;
     ref.keepAlive();
     debouncer = Debouncer(const Duration(milliseconds: 500), (value) {
       state = state.copyWith(
@@ -37,6 +36,7 @@ class PaginateProfiles extends _$PaginateProfiles {
       {List<String> interests = const [],
       int offset = 0,
       String searchKey = ''}) async {
+    busy = true;
     final newProfiles = await _repository.paginateProfiles(
       interests: interests,
       offset: offset,
@@ -46,7 +46,7 @@ class PaginateProfiles extends _$PaginateProfiles {
     state = state.copyWith(
       profiles: profiles,
       loading: false,
-      moreLoading: profiles.length == 5 ? true : false,
+      moreLoading: newProfiles.length == 5 ? true : false,
     );
     busy = false;
   }

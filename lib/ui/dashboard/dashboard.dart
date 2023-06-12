@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/ui/chat/chats_page.dart';
+import 'package:humble/ui/chat/providers/realtime_events_provider.dart';
 import 'package:humble/ui/home/home_page.dart';
 import 'package:humble/ui/profile/account_page.dart';
 import 'package:humble/ui/profile/providers/profile_repository_provider.dart';
@@ -51,6 +52,8 @@ class Dashboard extends HookConsumerWidget {
       if (previous == AppLifecycleState.paused &&
           current == AppLifecycleState.resumed) {
         getInitialMessage();
+                ref.refresh(realtimeEventsProvider);
+
       }
       if ([
         AppLifecycleState.detached,

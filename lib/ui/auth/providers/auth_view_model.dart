@@ -58,6 +58,8 @@ class AuthNotifier extends _$AuthNotifier {
         state.copyWith(obscureConfirmPassword: !state.obscureConfirmPassword);
   }
 
+  ProfileRepository get _repository => ref.read(profileRepositoryProvider);
+
   Future<void> login() async {
     try {
       state = state.copyWith(loading: true);
@@ -67,11 +69,11 @@ class AuthNotifier extends _$AuthNotifier {
       );
       await ref.refresh(userProvider.future);
       try {
-       final profile = await ref.read(profileProvider.future);
-       final token = await ref.read(messagingProvider).getToken();
-       if(token != null){
-        ref.read(profileRepositoryProvider).updateFcmToken(uid: profile.id, token: token);
-       }
+        final profile = await ref.read(profileProvider.future);
+        final token = await ref.read(messagingProvider).getToken();
+        if (token != null) {
+          _repository.updateFcmToken(uid: profile.id, token: token);
+        }
       } catch (e) {
         debugPrint('token error $e');
       }
@@ -131,7 +133,9 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> logout() async {
+     _repository.updateFcmToken(
+        uid: ref.read(userProvider).value!.$id, token: null);
     await _account.deleteSessions();
-   await ref.refresh(userProvider.future);
+    await ref.refresh(userProvider.future);
   }
 }

@@ -136,7 +136,7 @@ class ProfileRepository {
   }
 
   Future<void> updateFcmToken(
-      {required String uid, required String token}) async {
+      {required String uid, required String? token}) async {
     try {
       await _db.updateDocument(
         databaseId: DBs.main,

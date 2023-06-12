@@ -24,6 +24,9 @@ class ChatPage extends HookConsumerWidget {
     final user = ref.read(userProvider).value!;
     final notifer = ref.read(chatNotifierProvider(receiverId).notifier);
     ref.watch(chatNotifierProvider(receiverId));
+
+    final messagesProvider = messagesNotifierProvider(notifer.chatId);
+    final messagesState = ref.watch(messagesProvider);
     useEffect(() {
       ref.read(chatsProvider.future).then((value) {
         final chat = value.cast<Chat?>().firstWhere(
@@ -40,21 +43,19 @@ class ChatPage extends HookConsumerWidget {
       };
     }, []);
 
-    final messagesProvider = messagesNotifierProvider(notifer.chatId);
-    final messagesState = ref.watch(messagesProvider);
     final messagesNotifier = ref.read(messagesProvider.notifier);
 
     final hiveMessages = ref.read(messagesBoxProvider).value?.values.where(
-        (message) {
-          print(message.chatId);
-          print(message.chatId == notifer.chatId);
-          return message.chatId == notifer.chatId
-          &&
-            messagesState.messages
-                .where((element) => element.hiveKey == message.key)
-                .isEmpty;
-        },
-      ) ?? [];
+          (message) {
+            print(message.chatId);
+            print(message.chatId == notifer.chatId);
+            return message.chatId == notifer.chatId &&
+                messagesState.messages
+                    .where((element) => element.hiveKey == message.key)
+                    .isEmpty;
+          },
+        ) ??
+        [];
     final messages = [
       ...messagesState.messages,
       ...hiveMessages,
