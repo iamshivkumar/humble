@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/ui/auth/providers/auth_view_model.dart';
+import 'package:humble/ui/auth/widgets/primary_button.dart';
 import 'package:humble/ui/utils/extensions.dart';
 
 import '../components/loading_layer.dart';
@@ -51,12 +52,8 @@ class ResetPasswordPage extends HookConsumerWidget {
                 const SizedBox(
                   height: 32,
                 ),
-                MaterialButton(
-                  elevation: 0,
-                  disabledColor: context.scheme.outlineVariant.withOpacity(0.5),
-                  color: context.scheme.primaryContainer,
-                  textColor: context.scheme.onPrimaryContainer,
-                  onPressed: () async {
+                PrimaryButton(
+                  onPressed: model.email.isEmpty?null: () async {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
                       try {
@@ -70,7 +67,7 @@ class ResetPasswordPage extends HookConsumerWidget {
                       }
                     }
                   },
-                  child: const Text(Labels.sendResetLink),
+                 label: Labels.sendResetLink,
                 ),
                 const SizedBox(
                   height: 32,

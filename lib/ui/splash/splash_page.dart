@@ -42,6 +42,7 @@ class SplashPage extends HookConsumerWidget {
             Labels.appName,
             style: context.style.displayMedium!.copyWith(
               color: context.scheme.onPrimary,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),

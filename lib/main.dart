@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humble/core/enums/attachment_type.dart';
+import 'package:humble/core/providers/theme_mode_provider.dart';
 import 'package:humble/firebase_options.dart';
 import 'package:humble/ui/chat/models/attachment.dart';
 import 'package:humble/ui/chat/models/message.dart';
@@ -23,21 +24,32 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // const scheme = ColorScheme.highContrastLight(
-    //   primary: Colors.pink
-    // );
+  Widget build(BuildContext context,WidgetRef ref) {
+    final lightColorScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFFF02D64),
+    );
+    final darkColorScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFFF02D64),
+      brightness: Brightness.dark,
+    );
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: Labels.appName,
+      themeMode: ref.watch(themeModeProvider).asData?.value,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFF02D64),
-        ),
+        scaffoldBackgroundColor: lightColorScheme.surface,
+        colorScheme: lightColorScheme,
+        useMaterial3: true,
+        buttonTheme: const ButtonThemeData(shape: StadiumBorder()),
+        inputDecorationTheme: const InputDecorationTheme(),
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: darkColorScheme.surface,
+        colorScheme: darkColorScheme,
         useMaterial3: true,
         buttonTheme: const ButtonThemeData(shape: StadiumBorder()),
         inputDecorationTheme: const InputDecorationTheme(),

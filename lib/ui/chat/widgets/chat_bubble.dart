@@ -18,7 +18,7 @@ import 'package:humble/ui/chat/widgets/audio_player_title.dart';
 import 'package:humble/ui/chat/widgets/upload_progress_indicator.dart';
 import 'package:humble/ui/components/async_widget.dart';
 import 'package:humble/ui/utils/extensions.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/message.dart';
@@ -126,8 +126,9 @@ class MessageBubble extends HookConsumerWidget {
                   ),
                 ),
               _ => GestureDetector(
-                  onTap: () {
-                    OpenFile.open(file.path);
+                  onTap: () async {
+                  final value = await  OpenFilex.open(file.path);
+                  print(value.message);
                   },
                   child: Container(
                     decoration: BoxDecoration(

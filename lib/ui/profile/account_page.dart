@@ -1,9 +1,11 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_result
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:humble/core/providers/cache_provider.dart';
 import 'package:humble/core/providers/image_provider.dart';
+import 'package:humble/core/providers/theme_mode_provider.dart';
 import 'package:humble/core/utils/ids.dart';
 import 'package:humble/ui/auth/providers/auth_view_model.dart';
 import 'package:humble/ui/profile/providers/profile_provider.dart';
@@ -22,9 +24,27 @@ class AccountPage extends ConsumerWidget {
             .asData
             ?.value
         : null;
+    final themeMode = ref.read(themeModeProvider).asData?.value;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Account'),
+        actions: [
+          if (themeMode != null)
+            IconButton(
+              onPressed: () async{
+              await  ref.read(cacheProvider).value!.setString(
+                      'theme',
+                      themeMode == ThemeMode.light
+                          ? ThemeMode.dark.name
+                          : ThemeMode.light.name,
+                    );
+              ref.refresh(themeModeProvider);
+              },
+              icon: Icon(themeMode == ThemeMode.light
+                  ? Icons.light_mode
+                  : Icons.dark_mode),
+            )
+        ],
       ),
       body: Column(
         children: [
@@ -49,15 +69,15 @@ class AccountPage extends ConsumerWidget {
           ListTile(
             title: const Text("View profile"),
             trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-            onTap: (){
-              context.push(Routes.profile,extra: profile);
+            onTap: () {
+              context.push(Routes.profile, extra: profile);
             },
           ),
-                    ListTile(
+          ListTile(
             title: const Text("Edit profile"),
             trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-            onTap: (){
-              context.push(Routes.writeProfile,extra: profile);
+            onTap: () {
+              context.push(Routes.writeProfile, extra: profile);
             },
           ),
           const SizedBox(height: 56),
